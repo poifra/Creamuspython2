@@ -95,11 +95,6 @@
 		\vspace{2cm}
 
 		{\Huge\bf\sf Plan de projet}
-
-		\vspace{0.5cm}
-
-		{\bf\sf (TP2)}
-
 		\vspace{4cm}
 
 		{\bf\sf Par}
@@ -121,25 +116,35 @@
 		\vspace{\fill}
 		Remis le \today
 
-		\vspace{0.5cm}Université de Montréal
+		\vspace{0.5cm}
+		Université de Montréal
 	\end{center}
 
 	\newpage
 	
 	\section{Plan de travail}
 	\subsection{Énoncé}
-	
+	Construction en temps réel de progressions d'accords
 	\subsection{Analyse des besoins}
+	
+	L'interface graphique aura deux zones principales, la première étant une représentation de la progression d'accord actuelle. La seconde zone contiendra les accords que l'utilisateur peut remplacer. Pour faire le remplacement, il utilisera un double clic. Si le temps le permet, une méthode de "Drag and drop" sera implémentée. Si le temps ne le permet pas, l'utilisateur aura accès à une zone de texte ou le programme pourra \textit{parser} le contenu pour en déduire la progression à utiliser. Par exemple, l'utilisateur pourra entrer "Dm7 - G7 - Cmaj7" dans la zone de texte. La plupart des contrôles se feront avec la souris et la saisie de texte sera avec le clavier.
+	
 	\subsection{Acquisition de connaissances}
-	Pyo, règles d'harmonie
+	Une recherche sera effectuée sur la modélisation d'instruments afin d'obtenir un rendu plus réaliste. L'application tentera d'émuler un piano, il y aura donc une recherche dans ce sens. Au besoin, j'utiliserai l'enregistrement d'un vrai piano pour avoir une idée plus précise du son qu'il faut représenter. Aussi, étant donné le très large intervalle couvert par un piano, il se peut qu'un autre instrument de basse soit nécessaire, dans le cas où la synthèse ne soit pas assez bonne dans tout le spectre couvert. Le plus simple est probablement un instrument à vent, comme une clarinette basse. Si le temps le permet, l'application implémentera aussi des instruments à cordes, comme une contrebasse ou une guitare. À première vue, la synthèse de ces instruments est plus complexe et c'est pour cette raison qu'ils ne seront pas prioritaires.
+	
+	Pour les questions de construction d'accords ou, de manière plus générale, il faudra des recherches pour connaitre les règles. Pour simplifier le projet, l'application va limiter le nombre d'accords disponibles. Il ne sera pas possible, dans les plans initiaux, de créer n'importe quel accord et l'utilisateur sera limité à une banque pré-définie.
+	
 	\subsection{Modèle}
-	Une classe sera dédiée à contenir un "dictionnaire" de gammes et d'accords. Afin de faciliter l'abstraction, toutes les définitions seront basées sur la première octave MIDI. Par exemple, on pourra définir un accord majeur comme étant les notes $\{0,4,7\}$. La classe permettra de transposer --- par multiples de douze pour l'octave et en additionant ou soustrayant plus ou moins 11 pour la tonalité --- au besoin de l'utilisateur. Cette classe n'implémentera pas à proprement parler de processus audio, mais les classes utilisant de l'audio pourront utiliser ce dictionnaire comme référence. 
+	Un instrument à vent produit un son grâce aux vibrations de l'air qui résonnent dans un tube de longueur variable. Le piano est quant à lui un coup de marteau sur une corde de métal qui résonne par la suite. Notons que dans les deux cas, nous n'avons pas une seule fréquence de résonnance, mais plusieurs. On notera la présence d'harmoniques de la fréquence fondamentale.
 	
-	Une autre classe aura le rôle de gérer l'interface graphique. Celle-ci sera composée d'une zone qui contiendra la progression d'accord (à la manière d'une grille d'accord). La version par défaut de la grille aura la forme d'un accord par mesure. Donc, si la progression dure 4 accords, la grille aura quatre cases. Il sera possible d'en ajouter ou d'en supprimer à l'aide d'un bouton. Par souci de simplicité, la version initiale à pour objectif de gérer seulement des mesures de 4/4. Le tempo sera quant à lui variable (avec une borne maximale et minimale).
-	
-	Une classe sera responsable d'implémenter différents instruments. Pour simplifier les choses, une classe mère aura les composantes principales et les classes enfants utiliseront l'héritage pour implémenter leur instrument. La classe mère aura entre autres des propriétés de volume, d'orientation sonore (gauche/droite) et de tempo. 
+	Il m'est malheureusement difficile de décrire plus en détail la modélisation musicale, car mes connaissances en synthèse audio sont plutôt limités et il me faudra explorer les processus audio de Pyo plus en profondeur pour avoir une idée plus précise de ce qu'il faut comme travail pour simuler de façon adéquate un piano et un instrument à vent.
+
 	\subsection{Méthodes}
-	\subsection{Implémentation}
+	Une classe sera dédiée à contenir un "dictionnaire" de gammes et d'accords. Afin de faciliter l'abstraction, toutes les définitions seront basées sur la première octave MIDI. Par exemple, on pourra définir un accord majeur comme étant l'ensemble des notes $\{0,4,7\}$. On représentera une gamme majeur de façon similaire, comme étant l'ensemble $\{0,2,4,5,7,9,11\}$. Pour que le programme puisse distinguer les deux cas, les accords et les gammes seront dans des dictionnaires séparés. La classe permettra de transposer --- par multiples de douze pour l'octave et en additionnant ou soustrayant plus ou moins 11 pour la tonalité --- au besoin de l'utilisateur. Cette classe n'implémentera pas à proprement parler de processus audio, mais les classes utilisant de l'audio pourront utiliser ce dictionnaire comme référence. 
+	
+	Une autre classe aura le rôle de gérer l'interface graphique. Celle-ci sera composée d'une zone qui contiendra la progression d'accord (à la manière d'une grille d'accord). La version par défaut de la grille aura la forme d'un accord par mesure. Donc, si la progression dure 4 accords, la grille aura quatre cases. Il sera possible d'en ajouter ou d'en supprimer à l'aide d'un bouton.
+	
+	Une classe sera responsable d'implémenter différents instruments. Pour simplifier les choses, une classe mère aura les composantes principales et les classes enfants utiliseront l'héritage pour implémenter leur instrument. La classe mère aura entre autres des propriétés de volume, d'orientation sonore (gauche/droite) et de tempo. Les classes enfant utiliseront des chaînes de processus audio pour arriver à simuler leur instruments respectifs. En principe, uniquement les classes d'instruments vont utiliser les différents modules de la librairie sonore. Pour initialiser un instrument, il faudra lui passer une série de notes et un mode de fonctionnement, soit "mélodie" ou "accord". Dans le premier cas, la série de note sera utilisée de façon aléatoire pour générer une mélodie, avec un tempo déterminé. Dans le deuxième cas, un accord sera construit à partir du dictionnaire, une fois par temps. 
 
 
 \end{document}
