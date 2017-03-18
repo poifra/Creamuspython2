@@ -1,4 +1,23 @@
 from pyo import midiToHz
+
+'''
+Because i'm lazy, midi
+
+0 C 
+1 C#
+2 D
+3 D#
+4 E
+5 F
+6 F#
+7 G
+8 G#
+9 A
+10 A#
+11 B
+12 C
+'''
+
 scales = {
 	"minor":[0, 2, 3, 5, 7, 8, 10],
 	"chromatic": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
@@ -17,6 +36,7 @@ scales = {
 	"phrygian": [0, 1, 3, 5, 7, 8, 10]
 }
 
+
 chords = {
 	"power": [0, 7, 12],
 	"major triad": [0, 4, 7],
@@ -24,7 +44,11 @@ chords = {
 	"dominant seventh": [0, 4, 7, 10],
 	"major seventh": [0, 4, 7, 11],
 	"minor seventh": [0, 3, 7, 10],
-	"minor major seventh": [0, 3, 7, 11]
+	"minor major seventh": [0, 3, 7, 11],
+	"sus2" : [0, 2, 7],
+	"sus4" : [0, 5, 7],
+	"major add9" : [0, 4, 7, 14],
+	"minor add9" : [0, 3, 7, 14],
 }
 
 shiftFactors = {

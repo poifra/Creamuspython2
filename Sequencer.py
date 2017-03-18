@@ -5,7 +5,9 @@ from pyo import midiToHz, Metro, Iter, Ceil
 class Sequence:
     """Sequence of midi notes and rythms using the least amount of pure python as possible """
 
-    def __init__(self, notes=[], tempo=96):
+    def __init__(self, notes=[], tempo=80):
+        for note in notes:
+            print note.frequency
         self.notes = [note.frequency for note in notes]
         self.times = [note.time(tempo) for note in notes]
         self.amps = [note.amp for note in notes]
@@ -51,3 +53,10 @@ class Note:
 
     def time(self, tempo):
         return 60/(tempo / self.duration / 4)
+
+class Chord(Note):
+    def __init__(self, notes, duration, amp=1):
+        self.notes = notes #to change
+        self.duration = duration
+        self.amp = amp
+        self.frequency = [midiToHz(i) for i in self.notes] #to change

@@ -52,13 +52,12 @@ class ClassicSynth(BaseSynth):
 		self.panner = Pan((self.trans_resonator+self.osc).mix(0), mul=(0.1)*self.master_amp, pan=self.master_pan)
 		self.last_audio_object = self.panner
 
-	def set_notes(self, notes, tempo=96):
+	def set_notes(self, notes, tempo=96, mode='scale'):
 		BaseSynth.set_notes(self,notes)
 		self.trans_env_reader.input=self.trig
 		self.env_reader.input=self.trig
 		sine_freqs = []
-		for i in range(-1,1):
-			sine_freqs.extend([self.freq*(1+0.001*i), self.freq*2*(1+0.002*i), self.freq*3*(1+0.002*i),self.freq*5*(1+0.002*i)]) 
+		sine_freqs.extend([self.freq*(1+0.001*i), self.freq*2*(1+0.002*i), self.freq*3*(1+0.002*i),self.freq*5*(1+0.002*i)])
 		
 		self.osc.freq = sine_freqs
 		self.trans_resonator.freq = self.freq*4
