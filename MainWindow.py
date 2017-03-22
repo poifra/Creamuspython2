@@ -68,9 +68,7 @@ class CustomFrame(wx.Frame):
 		key = self.chordKeys.GetString(self.chordKeys.GetSelection())
 		quality = self.chordQualities.GetString(self.chordQualities.GetSelection())
 		symbol = chordSymbols[quality]
-		print "Adding "+key+symbol
 		self.chords.append(key+symbol)
-		print self.chords
 		self._updateLabel()
 
 	def onDeleteChord(self, event):

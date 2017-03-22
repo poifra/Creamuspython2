@@ -37,7 +37,7 @@ scales = {
 
 
 chords = {
-	"power": [0, 7, 12],
+	"fifth": [0, 7, 12],
 	"major triad": [0, 4, 7],
 	"minor triad": [0, 3, 7],
 	"augmented triad": [0, 4, 8],
@@ -55,7 +55,7 @@ chords = {
 }
 
 chordSymbols = {
-	"power": "5",
+	"fifth": "5",
 	"major triad": "",
 	"minor triad": "m",
 	"augmented triad": "+",
