@@ -6,7 +6,9 @@ class CustomFrame(wx.Frame):
 	def __init__(self, parent, id, title):
 		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 330), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
-		self.chords = ['Dm7','G7','C7'] #initial progression
+		notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
+		
+		self.chords = [u'Dm7',u'G7',u'C7'] #initial progression
 		self.panel = wx.Panel(self, -1)
 
 		self.btnAdd = wx.Button(self.panel, -1, 'Ajouter accord')
@@ -28,9 +30,11 @@ class CustomFrame(wx.Frame):
 			choices = sorted(shiftFactors.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
 		self.chordQualities = wx.ListBox(self.panel, -1, pos=wx.Point(32, 64),size=wx.Size(184, 256),
 			choices = sorted(chords.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
+		self.inversion = wx.ComboBox(self.panel, size=wx.DefaultSize, choices=notes)
 		
 		self.containerSizer = wx.BoxSizer(wx.VERTICAL)
 		self.chordChooserSizer = wx.BoxSizer(wx.HORIZONTAL)
+		self.inversionSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.btnAddRemoveSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.btnPlayStopSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.displaySizer = wx.BoxSizer(wx.HORIZONTAL)
