@@ -1,7 +1,6 @@
-from pyo import midiToHz
-
+#encoding:utf-8
 '''
-Because i'm lazy, midi
+Because i'm lazy, midi helper to find chord recipes
 
 0 C 
 1 C#
@@ -41,15 +40,38 @@ chords = {
 	"power": [0, 7, 12],
 	"major triad": [0, 4, 7],
 	"minor triad": [0, 3, 7],
+	"augmented triad": [0, 4, 8],
+	"diminished triad": [0, 3, 6],
 	"dominant seventh": [0, 4, 7, 10],
 	"major seventh": [0, 4, 7, 11],
 	"minor seventh": [0, 3, 7, 10],
 	"minor major seventh": [0, 3, 7, 11],
+	"major ninth" : [0, 4, 7, 11, 14],
+	"dominant ninth" : [0, 4, 7, 10, 13],
 	"sus2" : [0, 2, 7],
 	"sus4" : [0, 5, 7],
 	"major add9" : [0, 4, 7, 14],
 	"minor add9" : [0, 3, 7, 14],
 }
+
+chordSymbols = {
+	"power": "5",
+	"major triad": "",
+	"minor triad": "m",
+	"augmented triad": "+",
+	"diminished triad": 'dim',
+	"dominant seventh": "7",
+	"major seventh": "M7",
+	"minor seventh": "m7",
+	"minor major seventh": "mMaj7",
+	"major ninth" : "maj9",
+	"dominant ninth" : "9",
+	"sus2" : "sus2",
+	"sus4" : "sus4",
+	"major add9" : "add9",
+	"minor add9" : "mAdd9",
+}
+
 
 shiftFactors = {
 	"G":-5,
@@ -85,3 +107,6 @@ def transpose(target='major', octave=3, key='C'):
 		return [(i+12*octave)+shiftFactors[key] for i in target]
 	else:
 		raise ValueError("Unknown key!")
+
+def changeOctave(chord, amount):
+	return [max(0,(i+12*amount)) for i in chord] #max prevents going to negative midi notes
