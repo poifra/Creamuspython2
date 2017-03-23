@@ -4,12 +4,12 @@ from Chordbook import chords, chordSymbols, shiftFactors
 
 class CustomFrame(wx.Frame):
 	def __init__(self, parent, id, title):
-		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 375), 
-			style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
+		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 375))
+			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
 
-		self.chords = [u'Dm7',u'G7',u'C7'] #initial progression
+		self.chords = [u'Dm7',u'G7',u'CMaj7'] #initial progression
 		self.panel = wx.Panel(self, -1)
 
 		self.btnAdd = wx.Button(self.panel, -1, 'Ajouter accord')
