@@ -16,6 +16,15 @@ Because i'm lazy, midi helper to find chord recipes
 11 B
 12 C
 '''
+#assuming 4/4 time
+durations = {
+	"whole":1,
+	"half":1/2,
+	"quarter":1/4,
+	"eigth":1/8,
+	"triple":1/12,
+	"sixteenth":1/16,
+}
 
 scales = {
 	"minor":[0, 2, 3, 5, 7, 8, 10],

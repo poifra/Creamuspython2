@@ -7,16 +7,6 @@ from pyo import *
 
 s = Server().boot()
 
-#assuming 4/4 time
-durees = {
-	"whole":1,
-	"half":1/2,
-	"quarter":1/4,
-	"eigth":1/8,
-	"triple":1/12,
-	"sixteenth":1/16,
-}
-
 #scale =  transpose(target='minor', octave=6, key='F') + transpose(target='minor', octave=6, key='F')[::-1]
 
 #realNotes = [Note(i, durees["eigth"]) for i in scale]
