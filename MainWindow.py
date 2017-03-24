@@ -4,7 +4,7 @@ from Chordbook import chords, chordSymbols, shiftFactors
 
 class CustomFrame(wx.Frame):
 	def __init__(self, parent, id, title):
-		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 375))
+		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 400))
 			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
@@ -35,12 +35,18 @@ class CustomFrame(wx.Frame):
 		self.inversion = wx.ComboBox(self.panel, size=wx.DefaultSize, choices=notes)
 		self.inversionLabel = wx.StaticText(self.panel, id=-1, label="Inversion : ")
 
+		self.tempoLabel = wx.StaticText(self.panel, id=-1, label="Tempo : ")
+		self.tempoTextBox = wx.TextCtrl(self.panel)
+		self.tempoTextBox.SetValue("90") 
+		self.tempoTextBox.Bind(wx.EVT_CHAR, self.checkForNumber)
+
 		self.containerSizer = wx.BoxSizer(wx.VERTICAL)
 		self.chordChooserSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.inversionSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.btnAddRemoveSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.btnPlayStopSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.displaySizer = wx.BoxSizer(wx.HORIZONTAL)
+		self.tempoSizer = wx.BoxSizer(wx.HORIZONTAL)
 
 		self.btnAddRemoveSizer.Add(self.btnAdd, 1, wx.EXPAND)
 		self.btnAddRemoveSizer.Add(self.btnRemove, 1, wx.EXPAND)
@@ -48,13 +54,16 @@ class CustomFrame(wx.Frame):
 		self.btnPlayStopSizer.Add(self.btnPlay, 1, wx.EXPAND)
 		self.btnPlayStopSizer.Add(self.btnStop, 1, wx.EXPAND)
 
-		self.chordChooserSizer.Add(self.chordKeys, 1, wx.LEFT, 100)
-		self.chordChooserSizer.Add(self.chordQualities, 1, wx.RIGHT, 100)
+		self.chordChooserSizer.Add(self.chordKeys, 1, wx.EXPAND)
+		self.chordChooserSizer.Add(self.chordQualities, 1, wx.EXPAND)
 
 		self.inversionSizer.Add(self.inversionLabel, 0, wx.LEFT | wx.ALIGN_CENTER,150)
 		self.inversionSizer.Add(self.inversion, 1, wx.RIGHT,150)
 
 		self.displaySizer.Add(self.chordLabel, 1 , wx.EXPAND)
+
+		self.tempoSizer.Add(self.tempoLabel, 1, wx.LEFT | wx.ALIGN_CENTER, 150)
+		self.tempoSizer.Add(self.tempoTextBox, 1, wx.RIGHT, 150)
 
 		self.containerSizer.Add(self.chordChooserSizer, 0, wx.EXPAND)
 		self.containerSizer.Add(self.inversionSizer, 0, wx.EXPAND)
@@ -62,7 +71,8 @@ class CustomFrame(wx.Frame):
 		self.containerSizer.Add(wx.StaticLine(self.panel), 0, wx.ALL|wx.EXPAND, 5)
 		self.containerSizer.Add(self.displaySizer, 0, wx.ALIGN_CENTER)
 		self.containerSizer.Add(self.btnPlayStopSizer, 0, wx.EXPAND)
-		
+		self.containerSizer.Add(self.tempoSizer, 0, wx.EXPAND)
+
 		self.panel.SetSizer(self.containerSizer)
 		self.Centre()
 	
@@ -104,11 +114,20 @@ class CustomFrame(wx.Frame):
 		self._updateLabel()
 
 	def onPlay(self, event):
+		tempo = int(self.tempoTextBox.GetValue().strip())
+		if tempo < 30 or tempo > 300:
+			print "Tempo must be between 30 and 300"
+			return
 		print("TWADO PLAY")
 
 	def onStop(self, event):
 		print("TWADO STOP")
 
+	def checkForNumber(self, event):
+		keycode = event.GetKeyCode()
+		if chr(keycode) in [str(i) for i in range(10)] or keycode == 8:
+			event.Skip()
+				
 	def getChords(self):
 		return self.chordProg
 
