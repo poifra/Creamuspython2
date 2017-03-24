@@ -8,7 +8,7 @@ class CustomFrame(wx.Frame):
 			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
-
+		notes = ['None'] + notes
 		self.chords = [u'Dm7',u'G7',u'CMaj7'] #initial progression
 		self.panel = wx.Panel(self, -1)
 
@@ -33,6 +33,8 @@ class CustomFrame(wx.Frame):
 			choices = sorted(chords.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
 		
 		self.inversion = wx.ComboBox(self.panel, size=wx.DefaultSize, choices=notes)
+		self.inversion.SetSelection(0)
+
 		self.inversionLabel = wx.StaticText(self.panel, id=-1, label="Inversion : ")
 
 		self.tempoLabel = wx.StaticText(self.panel, id=-1, label="Tempo : ")
@@ -82,7 +84,7 @@ class CustomFrame(wx.Frame):
 		self.containerSizer.Layout()
 
 	def _updateBoxes(self):
-		self.inversion.SetSelection(-1)
+		self.inversion.SetSelection(0)
 		self.chordQualities.SetSelection(-1)	
 		self.chordKeys.SetSelection(-1)
 		self.inversionSizer.Layout()
@@ -93,7 +95,7 @@ class CustomFrame(wx.Frame):
 		if self.chordQualities.GetSelection() == -1 or self.chordKeys.GetSelection() == -1:
 			print "YOU MUST CHOOSE ADDITIONAL DATA"
 			return
-		if self.inversion.GetSelection != -1:
+		if self.inversion.GetSelection > 0:
 			inv = self.inversion.GetString(self.inversion.GetSelection())
 
 		key = self.chordKeys.GetString(self.chordKeys.GetSelection())
