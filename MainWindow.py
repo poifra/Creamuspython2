@@ -1,6 +1,6 @@
 #encoding:utf-8
 import wx
-from Chordbook import chords, chordSymbols, shiftFactors
+from Chordbook import chords, shiftFactors, transpose
 
 class CustomFrame(wx.Frame):
 	def __init__(self, parent, id, title):
@@ -10,6 +10,10 @@ class CustomFrame(wx.Frame):
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
 		notes = ['None'] + notes
 		self.chords = [u'Dm7',u'G7',u'CMaj7'] #initial progression
+		self.chordNotes = [transpose(key='D', target='m7'), 
+						transpose(key='G', target ='7'),
+						transpose(key='C', target='maj7')]
+
 		self.panel = wx.Panel(self, -1)
 
 		self.btnAdd = wx.Button(self.panel, -1, 'Ajouter accord')
@@ -29,8 +33,10 @@ class CustomFrame(wx.Frame):
 
 		self.chordKeys = wx.ListBox(self.panel, -1, pos=wx.Point(8, 48), size=wx.Size(75, 256), 
 			choices = sorted(shiftFactors.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
+
 		self.chordQualities = wx.ListBox(self.panel, -1, pos=wx.Point(32, 64),size=wx.Size(184, 256),
 			choices = sorted(chords.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
+		
 		
 		self.inversion = wx.ComboBox(self.panel, size=wx.DefaultSize, choices=notes)
 		self.inversion.SetSelection(0)
@@ -95,17 +101,17 @@ class CustomFrame(wx.Frame):
 		if self.chordQualities.GetSelection() == -1 or self.chordKeys.GetSelection() == -1:
 			print "YOU MUST CHOOSE ADDITIONAL DATA"
 			return
-		if self.inversion.GetSelection > 0:
+		if self.inversion.GetSelection() > 0:
 			inv = self.inversion.GetString(self.inversion.GetSelection())
 
 		key = self.chordKeys.GetString(self.chordKeys.GetSelection())
 		quality = self.chordQualities.GetString(self.chordQualities.GetSelection())
-		symbol = chordSymbols[quality]
 
 		if inv == '':
-			self.chords.append(key+symbol)
+			self.chords.append(key+quality)
+			self.chordNotes.append(transpose(key=key,target=quality))
 		else:
-			self.chords.append(key+symbol+'/'+inv)
+			self.chords.append(key+quality+'/'+inv)
 
 		self._updateBoxes()
 		self._updateLabel()
@@ -113,6 +119,7 @@ class CustomFrame(wx.Frame):
 	def onDeleteChord(self, event):
 		#stack based logic, will change in the future
 		self.chords.pop()
+		self.chordNotes.pop()
 		self._updateLabel()
 
 	def onPlay(self, event):

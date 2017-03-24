@@ -3,16 +3,16 @@
 Because i'm lazy, midi helper to find chord recipes
 
 0 C 
-1 C#
+1 C#/Db
 2 D
-3 D#
+3 D#/Eb
 4 E
 5 F
-6 F#
+6 F#/Gb
 7 G
-8 G#
+8 G#/Ab
 9 A
-10 A#
+10 A#/Bb
 11 B
 12 C
 '''
@@ -44,43 +44,54 @@ scales = {
 	"phrygian": [0, 1, 3, 5, 7, 8, 10]
 }
 
-
-chords = {
-	"fifth": [0, 7, 12],
-	"major triad": [0, 4, 7],
-	"minor triad": [0, 3, 7],
-	"augmented triad": [0, 4, 8],
-	"diminished triad": [0, 3, 6],
-	"dominant seventh": [0, 4, 7, 10],
-	"major seventh": [0, 4, 7, 11],
-	"minor seventh": [0, 3, 7, 10],
-	"minor major seventh": [0, 3, 7, 11],
-	"major ninth" : [0, 4, 7, 11, 14],
-	"dominant ninth" : [0, 4, 7, 10, 13],
-	"sus2" : [0, 2, 7],
-	"sus4" : [0, 5, 7],
-	"major add9" : [0, 4, 7, 14],
-	"minor add9" : [0, 3, 7, 14],
+chords ={
+	"":[0,4,7], #major
+	"maj7":[0,4,7,11],
+	"maj9":[0,4,7,11,14],
+	"maj11":[0,4,7,11,14,17],
+	"maj13":[0,4,7,11,14,17,21],
+	"maj9#11":[0,4,7,11,14,18],
+	"maj13#11":[0,4,7,11,14,18,21],
+	"6":[0,4,7,9],
+	"add9":[0,4,7,14],
+	"6add9":[0,4,7,9,14],
+	"maj7b5":[0,4,6,11],
+	"maj7#5":[0,4,8,11],
+	"7":[0,4,7,10],
+	"9":[0,4,7,10,14],
+	"11":[0,4,7,10,14,17],
+	"13":[0,4,7,10,14,17,21],
+	"7sus4":[0,5,7,10],
+	"7b5":[0,4,6,10],
+	"7#5":[0,4,8,10],
+	"7b9":[0,4,7,10,13],
+	"7#9":[0,4,7,10,15],
+	"7(b5,b9)":[0,4,6,10,13],
+	"7(b5,#9)":[0,4,6,10,15],
+	"7(#5,b9)":[0,4,8,10,13],
+	"7(#5,#9)":[0,4,8,10,15],
+	"9b5":[0,4,6,10,14],
+	"9#5":[0,4,8,10,14],
+	"13#11":[0,4,7,10,14,18,21],
+	"13b9":[0,4,7,10,13,17,21],
+	"11b9":[0,4,7,10,13,17],
+	"aug":[0,3,8],
+	"dim":[0,3,6],
+	"dim7":[0,3,6,9],
+	"5":[0,6,12],
+	"sus4":[0,5,7],
+	"sus2":[0,2,7],
+	"sus2sus4":[0,2,5,7],
+	"-5":[0,4,6],
 }
 
-chordSymbols = {
-	"fifth": "5",
-	"major triad": "",
-	"minor triad": "m",
-	"augmented triad": "+",
-	"diminished triad": 'dim',
-	"dominant seventh": "7",
-	"major seventh": "M7",
-	"minor seventh": "m7",
-	"minor major seventh": "mMaj7",
-	"major ninth" : "maj9",
-	"dominant ninth" : "9",
-	"sus2" : "sus2",
-	"sus4" : "sus4",
-	"major add9" : "add9",
-	"minor add9" : "mAdd9",
-}
+#adds all minor chords. I have no remorse. Python one-liners FTW
+for k,v in chords.items():4 in v and chords.update({'m'+k:[3 if i==1 else v[i] for i,_ in enumerate(v)]}) 
 
+#old version, has a useless condition in it, i kept it because it's beautiful
+#for k,v in chords.items():4 in v and 'm'+k not in chords.keys() and chords.update({'m'+k:[3 if i==1 else v[i] for i,_ in enumerate(v)]})
+
+del chords['m-5'] #remove random dimished chord
 
 shiftFactors = {
 	"G":-5,
@@ -102,7 +113,7 @@ shiftFactors = {
 	"Gb":6
 }
 
-def transpose(target='major', octave=3, key='C'):
+def transpose(target='', octave=3, key='C', inversion=None):
 	#change l'octave et transpose une gamme ou un accord
 	if target not in scales and target not in chords:
 		raise ValueError("Unknown chord or scale")
@@ -111,6 +122,9 @@ def transpose(target='major', octave=3, key='C'):
 		target = scales[target]
 	else:
 		target = chords[target]
+
+	if inversion:
+		pass
 
 	if key in shiftFactors:
 		return [(i+12*octave)+shiftFactors[key] for i in target]
