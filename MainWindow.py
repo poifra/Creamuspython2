@@ -36,7 +36,7 @@ class CustomFrame(wx.Frame):
 
 		self.chordQualities = wx.ListBox(self.panel, -1, pos=wx.Point(32, 64),size=wx.Size(184, 256),
 			choices = sorted(chords.keys()), style = wx.LB_SINGLE | wx.LB_ALWAYS_SB)
-		
+
 		
 		self.inversion = wx.ComboBox(self.panel, size=wx.DefaultSize, choices=notes)
 		self.inversion.SetSelection(0)
@@ -107,11 +107,17 @@ class CustomFrame(wx.Frame):
 		key = self.chordKeys.GetString(self.chordKeys.GetSelection())
 		quality = self.chordQualities.GetString(self.chordQualities.GetSelection())
 
+
+		if quality == 'major':
+			display = ''
+		else:
+			display = quality
+
 		if inv == '':
-			self.chords.append(key+quality)
+			self.chords.append(key+display)
 			self.chordNotes.append(transpose(key=key,target=quality))
 		else:
-			self.chords.append(key+quality+'/'+inv)
+			self.chords.append(key+display+'/'+inv)
 
 		self._updateBoxes()
 		self._updateLabel()
