@@ -1,13 +1,10 @@
 # coding:utf-8
 from __future__ import division
+from Chordbook import durations
 from pyo import midiToHz, Metro, Iter, Ceil
 
 class Sequence:
-    """Sequence of midi notes and rythms using the least amount of pure python as possible """
-
     def __init__(self, notes=[], tempo=80):
-        for note in notes:
-            print note.frequency
         self.notes = [note.frequency for note in notes]
         self.times = [note.time(tempo) for note in notes]
         self.amps = [note.amp for note in notes]

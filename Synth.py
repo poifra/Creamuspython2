@@ -66,8 +66,14 @@ class ClassicSynth(BaseSynth):
 class BassWalkSynth(BaseSynth):
 	#Work in progress
 	def __init__(self, sequence, amp = 1, pan = 0.5):
+		self.SIZE = 5
 		BaseSynth.__init__(self, sequence, amp, pan)
-		self.env = CosTable([(0,0), (100,1), (1000,.25), (8191,0)])
+		self.vibrato = Sine(freq=1, mul=0.1)
+		self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE)-self.vibrato)
+		self.rev = Freeverb(self.sig)
+		self.panner = Pan(self.rev, mul=0.1*self.master_amp, pan=self.master_pan)
+		self.last_audio_object = self.panner
 
 	def set_notes(self, notes, tempo = 96):
-		pass
+		BaseSynth.set_notes(self,notes)
+		self.sig.freq = [self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)]

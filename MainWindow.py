@@ -108,7 +108,7 @@ class CustomFrame(wx.Frame):
 		quality = self.chordQualities.GetString(self.chordQualities.GetSelection())
 
 
-		if quality == 'major':
+		if quality == 'maj':
 			display = ''
 		else:
 			display = quality
