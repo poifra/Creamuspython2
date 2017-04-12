@@ -16,6 +16,10 @@ class Sequence:
         self.signal = Iter(self._metro, self.notes)
         #triggers are only sent when amp is >0
         self.trigger = Ceil(self.amp*self._metro)
+        self.isPlaying = False
+
+    def isPlaying(self):
+        return self.isPlaying
 
     def append(self, note):
         self.notes.append(note.frequency)
@@ -37,8 +41,10 @@ class Sequence:
 
     def play(self):
         self._metro.play()
+        self.isPlaying = True
         return self
     def stop(self):
+        self.isPlaying = False
         self._metro.stop()
 
 class Note:

@@ -30,6 +30,12 @@ class BaseSynth:
 		self.pan.setValue(value)
 		return self 
 
+	def set_sequence(self, sequence):
+		self.sequence = sequence
+		self.trig = self.sequence.trigger
+		self.dur = self.sequence.time
+		self.freq = self.sequence.signal
+
 	def set_notes(self, notes, tempo=96):
 		self.sequence.set_notes(notes)
 
@@ -69,7 +75,9 @@ class BassWalkSynth(BaseSynth):
 		self.SIZE = 5
 		BaseSynth.__init__(self, sequence, amp, pan)
 		self.vibrato = Sine(freq=1, mul=0.1)
-		self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE)-self.vibrato)
+		#self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE)-self.vibrato)
+		self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE))
+		
 		self.rev = Freeverb(self.sig)
 		self.panner = Pan(self.rev, mul=0.1*self.master_amp, pan=self.master_pan)
 		self.last_audio_object = self.panner

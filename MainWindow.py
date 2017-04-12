@@ -125,7 +125,8 @@ class CustomFrame(wx.Frame):
 		else:
 			self.chords.append(key+display+'/'+inv)
 
-		self.audio.setChords(self.chordNotes, self.chords)
+		print "In main window ",self.chords
+		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self._updateBoxes()
 		self._updateLabel()
 
@@ -133,7 +134,7 @@ class CustomFrame(wx.Frame):
 		#stack based logic, will change in the future
 		self.chords.pop()
 		self.chordNotes.pop()
-		self.audio.setChords(self.chordNotes)
+		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self._updateLabel()
 
 	def onPlay(self, event):
@@ -148,6 +149,8 @@ class CustomFrame(wx.Frame):
 		self.btnPlay.Disable()
 		self.btnStop.Enable()
 
+		print "In main window, play",self.chords
+		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self.audio.play(tempo)
 		print("TWADO PLAY")
 
@@ -166,15 +169,6 @@ class CustomFrame(wx.Frame):
 		keycode = event.GetKeyCode()
 		if chr(keycode) in [str(i) for i in range(10)] or keycode == 8:
 			event.Skip()
-				
-	def getChords(self):
-		return self.chordProg
-
-	def setChords(self, chord, i = -1):
-		if i < 0:
-			self.chords.append(chord)
-		else:
-			self.chords.insert(i, chord)
 
 class ChordManager(wx.App):
 	def OnInit(self):
