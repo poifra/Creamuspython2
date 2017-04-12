@@ -13,7 +13,7 @@ class AudioPlayer():
 		self.noteCounter = Pattern(self._timer,self.dur)
 		self.setChords(chords, firstTime = True, cNames = chordNames)
 		self.firstChord = self.currentChord
-
+		self.totalCount = 1
 		self.verbose = verbose
 
 	def play(self, tempo):
@@ -24,6 +24,12 @@ class AudioPlayer():
 		self.serv.start()
 
 	def stop(self):
+		if self.bassSeq.isPlaying():
+			self.bassSeq.stop()
+		for seq in self.chordSeqs:
+			if seq.isPlaying():
+				seq.stop()
+
 		self.currentNote = 1
 		self.currentChord = self.firstChord
 		self.currentBass
@@ -97,6 +103,7 @@ class AudioPlayer():
 			self.currentNote = 1
 
 		if self.verbose:
-			print "Current note="+str(self.currentNote)
+			print "Current note="+str(self.currentNote)+" Total count="+str(self.totalCount)
 			print "Current Chord="+str(self.currentName)
 		self.currentNote += self.dur
+		self.totalCount += 1
