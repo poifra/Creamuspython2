@@ -88,7 +88,7 @@ chords = {
     "-5": [0, 4, 6],
 }
 
-#adds all minor chords. I have no remorse. Python one-liners FTW
+#adds all minor chords. Python one-liners FTW
 for k, v in chords.items(): 4 in v and chords.update({'m'+k: [3 if i == 1 else v[i] for i, _ in enumerate(v)]}) 
 
 #old version, has a useless condition in it, i kept it because it's beautiful

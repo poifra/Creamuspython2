@@ -1,12 +1,14 @@
 #encoding:utf-8
 import wx
 from Chordbook import chords, shiftFactors, transpose
+from AudioManager import AudioPlayer
 
 class CustomFrame(wx.Frame):
 	def __init__(self, parent, id, title):
 		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 400))
 			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
+		self.DEFAULT_TEMPO = 60
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
 		notes = ['None'] + notes
 		self.chords = [u'Dm7',u'G7',u'CMaj7'] #initial progression
@@ -27,6 +29,7 @@ class CustomFrame(wx.Frame):
 
 		self.btnStop = wx.Button(self.panel, -1, 'STOP')
 		self.btnStop.Bind(wx.EVT_BUTTON, self.onStop)
+		self.btnStop.Disable()
 
 		self.chordLabel = wx.StaticText(self.panel, id=-1, label=" -- ".join(self.chords), pos=(-1,-1), size=(-1,-1), 
 			style=wx.ALIGN_CENTRE_HORIZONTAL)
@@ -45,7 +48,8 @@ class CustomFrame(wx.Frame):
 
 		self.tempoLabel = wx.StaticText(self.panel, id=-1, label="Tempo : ")
 		self.tempoTextBox = wx.TextCtrl(self.panel)
-		self.tempoTextBox.SetValue("90") 
+		self.tempoTextBox.SetValue(str(self.DEFAULT_TEMPO))
+		self.tempo = self.DEFAULT_TEMPO
 		self.tempoTextBox.Bind(wx.EVT_CHAR, self.checkForNumber)
 
 		self.containerSizer = wx.BoxSizer(wx.VERTICAL)
@@ -83,6 +87,8 @@ class CustomFrame(wx.Frame):
 
 		self.panel.SetSizer(self.containerSizer)
 		self.Centre()
+
+		self.audio = AudioPlayer(self.tempo,self.chordNotes,self.chords)
 	
 	def _updateLabel(self):
 		self.chordLabel.SetLabel(" -- ".join(self.chords))
@@ -119,6 +125,7 @@ class CustomFrame(wx.Frame):
 		else:
 			self.chords.append(key+display+'/'+inv)
 
+		self.audio.setChords(self.chordNotes, self.chords)
 		self._updateBoxes()
 		self._updateLabel()
 
@@ -126,16 +133,33 @@ class CustomFrame(wx.Frame):
 		#stack based logic, will change in the future
 		self.chords.pop()
 		self.chordNotes.pop()
+		self.audio.setChords(self.chordNotes)
 		self._updateLabel()
 
 	def onPlay(self, event):
 		tempo = int(self.tempoTextBox.GetValue().strip())
+		
 		if tempo < 30 or tempo > 300:
-			print "Tempo must be between 30 and 300"
+			print "Tempo must be between 30 and 300 bpm"
 			return
+		self.tempoTextBox.Disable()
+		self.btnAdd.Disable()
+		self.btnRemove.Disable()
+		self.btnPlay.Disable()
+		self.btnStop.Enable()
+
+		self.audio.play(tempo)
 		print("TWADO PLAY")
 
 	def onStop(self, event):
+		self.audio.stop()
+
+		self.btnAdd.Enable()
+		self.btnStop.Disable()
+		self.btnPlay.Enable()
+		self.btnRemove.Enable()
+		self.tempoTextBox.Enable()
+
 		print("TWADO STOP")
 
 	def checkForNumber(self, event):
