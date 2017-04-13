@@ -19,11 +19,15 @@ syn.get_out().out()
 
 def updateBarCount(dur):
 	global barCount, noteCount
+	global seq, syn
 	if noteCount == 4:
 		barCount += 1
 		noteCount = 0
 		print barCount
 	noteCount += dur
+
+	if barCount == 4:
+		pass
 p = Pattern(updateBarCount, duree, duree)
 p.play()
 
