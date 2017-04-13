@@ -24,10 +24,10 @@ class AudioPlayer():
 		self.serv.start()
 
 	def stop(self):
-		if self.bassSeq.isPlaying():
+		if self.bassSeq.isPlaying:
 			self.bassSeq.stop()
 		for seq in self.chordSeqs:
-			if seq.isPlaying():
+			if seq.isPlaying:
 				seq.stop()
 
 		self.currentNote = 1
@@ -58,21 +58,14 @@ class AudioPlayer():
 		newChord = [Note(n, durations['half']) for n in self.currentChord]
 		
 		if firstTime:
-			self.bassSeq = Sequence(newBass, self.tempo)
-			self.bassSynth = BassWalkSynth(self.bassSeq)
-			self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
-			self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
+			self._createSynths(newBass, newChord)
 		else:
 			if self.bassSeq.isPlaying:
 				self.bassSeq.stop()
 			for seq in self.chordSeqs:
 				if seq.isPlaying:
 					seq.stop()
-
-			self.bassSynth.set_notes(newBass)
-			self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
-			self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
-			
+			self._createSynths(newBass, newChord)
 		self.bassSynth.get_out().out()
 		if not(self.bassSeq.isPlaying):
 			self.bassSeq.play()
@@ -83,17 +76,12 @@ class AudioPlayer():
 			if not(seq.isPlaying):
 				seq.play()
 
-		# self.bassSeq.play()
-		# self.bassSynth = BassWalkSynth(self.bassSeq)
-		# self.bassSynth.get_out().out()
+	def _createSynths(self, newBass, newChord):
+		self.bassSeq = Sequence(newBass, self.tempo)
+		self.bassSynth = BassWalkSynth(self.bassSeq)
+		self.chordSeqs = [[Sequence([note],self.tempo)] for note in newChord]
+		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
 
-		# self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
-
-		# for seq in chordSeqs:
-		# 	seq.play()
-		# self.chordSynths = [ClassicSynth(c,amp=0.1) for c in chordSeqs]
-		# for s in self.chordSynths:
-		# 	s.get_out().out()
 
 	def _timer(self):
 		if self.currentNote > 4:

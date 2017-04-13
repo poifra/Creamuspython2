@@ -3,31 +3,33 @@ from Chordbook import transpose, durations
 from Sequencer import Sequence, Note
 from Synth import ClassicSynth, BassWalkSynth
 from random import choice
+from itertools import cycle
 from pyo import *
 
 s = Server().boot()
 barCount = 0
 noteCount = 0
-scale =  transpose(target='m7', octave=3, key='G')
+scale =  [transpose(target='m7', octave=5, key='G'), transpose(target='maj7',octave=5,key='C')]
+scale = cycle(scale)
+currentChord = next(scale)
 duree = durations["quarter"]
 realNotes = [Note(i, duree) for i in scale]
-seq = Sequence(realNotes,tempo=90)
-syn = BassWalkSynth(seq)
+seqs = Sequence([n] for n in realNotes,tempo=90)
+syns = BassWalkSynth(seq)
 
 syn.sequence.play()
 syn.get_out().out()
 
 def updateBarCount(dur):
 	global barCount, noteCount
-	global seq, syn
+	global seq, syn, currentChord
 	if noteCount == 4:
 		barCount += 1
+		currentChord = next(scale)
 		noteCount = 0
 		print barCount
 	noteCount += dur
 
-	if barCount == 4:
-		pass
 p = Pattern(updateBarCount, duree, duree)
 p.play()
 
