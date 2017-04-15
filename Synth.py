@@ -76,9 +76,9 @@ class BassWalkSynth(BaseSynth):
 		BaseSynth.__init__(self, sequence, amp, pan)
 		self.vibrato = Sine(freq=1, mul=0.1)
 		#self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE)-self.vibrato)
-		self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE))
-		
-		self.rev = Freeverb(self.sig)
+		self.sig = SineLoop(freq=self.freq)
+		self.chorus = Chorus(self.sig)
+		self.rev = Freeverb(self.chorus)
 		self.panner = Pan(self.rev, mul=0.1*self.master_amp, pan=self.master_pan)
 		self.last_audio_object = self.panner
 
