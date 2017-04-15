@@ -7,56 +7,58 @@ from itertools import cycle
 from pyo import *
 
 s = Server().boot()
-barCount = 0
-noteCount = 0
-scale =  [transpose(target='m7', octave=5, key='G'), transpose(target='maj7',octave=5,key='C')]
-scale = cycle(scale)
-currentChord = next(scale)
-duree = durations["quarter"]
-realNotes = [Note(i, duree) for i in scale]
-seqs = Sequence([n] for n in realNotes,tempo=90)
-syns = BassWalkSynth(seq)
+noteCount = 1
+totalCount = 0
+tempo = 70
+chords = cycle(
+		[
+		transpose(target='m7',key='D',octave=5),
+		transpose(target='7',key='G',octave=5),
+		transpose(target='maj7', key='C',octave=5)
+		]
+	)
+chordName = cycle(['Dm7','G7','CMaj7'])
+currentChord = next(chords)
+currentChordName = next(chordName)
+duree = durations['half']
 
-syn.sequence.play()
-syn.get_out().out()
+realNotes = [Note(n, duree) for n in currentChord]
+seqs = [Sequence([n],tempo) for n in realNotes]
 
-def updateBarCount(dur):
-	global barCount, noteCount
-	global seq, syn, currentChord
-	if noteCount == 4:
-		barCount += 1
-		currentChord = next(scale)
-		noteCount = 0
-		print barCount
-	noteCount += dur
+for seq in seqs:
+	seq.play()
 
-p = Pattern(updateBarCount, duree, duree)
-p.play()
+synths = [ClassicSynth(seq) for seq in seqs]
 
-s.start()
+for syn in synths:
+	syn.get_out().out()
+
+def changeChord():
+	global currentChord, seqs, synths
+	global noteCount, currentChordName, totalCount
+	if noteCount > 4:
+		print "changing chord"
+		noteCount = 1
+		currentChord = next(chords)
+		currentChordName = next(chordName)
+		newNotes = [Note(n, duree) for n in currentChord]
+		for seq in seqs:
+			if seq.isPlaying():
+				seq.stop()
+
+		seqs = [Sequence([n],tempo) for n in newNotes]
+		synths = [ClassicSynth(seq) for seq in seqs]
+
+	for seq in seqs:
+		if not(seq.isPlaying()):
+			seq.play()
+
+	for syn in synths:
+		syn.get_out().out()
+	print "Current="+currentChordName+" Total count="+str(totalCount)
+	noteCount += 1
+	totalCount += 1
+
+pat = Pattern(changeChord, time=60/(tempo / durations['quarter'] / 4))
+pat.play()
 s.gui(locals())
-
-# from random import choice, random
-# from pyo import *
-# from Chordbook import transpose
-
-# from pyo import *
-
-# s = Server().boot()
-# SIZE = 4
-# choices = transpose(target='major', octave=3)
-# note = midiToHz(random.choice(choices))
-# pick = Choice(midiToHz(choices),freq=2)
-# port = SigTo(pick, time=0.01, mul = [1,1.005])
-# vibrato = Sine(freq=1, mul=0.1)
-# sig = SineLoop(freq=[port*(random.uniform(0.990,1.01)) for _ in range(SIZE)],feedback=0.1,mul=1.0/(5*SIZE)-vibrato)
-# rev = Freeverb(sig,size=0.4, damp=1.0, bal=0.8).out()
-
-# def change():
-# 	note = midiToHz(random.choice(choices))
-# 	sig.freq = [note*(random.uniform(0.990,1.01)) for _ in range(SIZE)]
-
-# #p = Pattern(change, 0.25)
-# #p.play()
-
-# s.gui(locals())

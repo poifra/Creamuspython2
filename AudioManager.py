@@ -60,20 +60,20 @@ class AudioPlayer():
 		if firstTime:
 			self._createSynths(newBass, newChord)
 		else:
-			if self.bassSeq.isPlaying:
+			if self.bassSeq.isPlaying():
 				self.bassSeq.stop()
 			for seq in self.chordSeqs:
 				if seq.isPlaying:
 					seq.stop()
 			self._createSynths(newBass, newChord)
 		self.bassSynth.get_out().out()
-		if not(self.bassSeq.isPlaying):
+		if not(self.bassSeq.isPlaying()):
 			self.bassSeq.play()
 
 		for s in self.chordSynths:
 			s.get_out().out()
 		for seq in self.chordSeqs:
-			if not(seq.isPlaying):
+			if not(seq.isPlaying()):
 				seq.play()
 
 	def _createSynths(self, newBass, newChord):
@@ -81,7 +81,6 @@ class AudioPlayer():
 		self.bassSynth = BassWalkSynth(self.bassSeq)
 		self.chordSeqs = [[Sequence([note],self.tempo)] for note in newChord]
 		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
-
 
 	def _timer(self):
 		if self.currentNote > 4:

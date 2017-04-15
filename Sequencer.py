@@ -16,10 +16,7 @@ class Sequence:
 		self.signal = Iter(self._metro, self.notes)
 		#triggers are only sent when amp is >0
 		self.trigger = Ceil(self.amp*self._metro)
-		self.isPlaying = False
-
-	def isPlaying(self):
-		return self.isPlaying
+		self.playing = False
 
 	def append(self, note):
 		self.notes.append(note.frequency)
@@ -41,10 +38,14 @@ class Sequence:
 
 	def play(self):
 		self._metro.play()
-		self.isPlaying = True
+		self.playing = True
 		return self
+
+	def isPlaying(self):
+		return self.playing
+
 	def stop(self):
-		self.isPlaying = False
+		self.playing = False
 		self._metro.stop()
 
 class Note:
@@ -54,12 +55,8 @@ class Note:
 		self.amp = amp
 		self.frequency = midiToHz(self.note)
 
-	def time(self, tempo):
+	def time(self, tempo=80):
 		return 60/(tempo / self.duration / 4)
 
-class Chord(Note):
-	def __init__(self, notes, duration, amp=1):
-		self.notes = notes #to change
-		self.duration = duration
-		self.amp = amp
-		self.frequency = [midiToHz(i) for i in self.notes] #to change
+	def __repr__(self):
+		return "Note="+str(self.note)+" duration="+str(self.duration)+" Freq="+str(self.frequency)

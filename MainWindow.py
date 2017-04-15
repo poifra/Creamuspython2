@@ -172,7 +172,7 @@ class CustomFrame(wx.Frame):
 
 class ChordManager(wx.App):
 	def OnInit(self):
-		frame = CustomFrame(None, -1, 'Super Chord Manager 3000')
+		frame = CustomFrame(None, -1, 'Chord Helper')
 		frame.Show(True)
 		return True
 
