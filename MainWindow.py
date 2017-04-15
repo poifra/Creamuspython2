@@ -150,6 +150,7 @@ class CustomFrame(wx.Frame):
 		self.btnStop.Enable()
 
 		print "In main window, play",self.chords
+		self.audio.setTempo(tempo)
 		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self.audio.play(tempo)
 		print("TWADO PLAY")

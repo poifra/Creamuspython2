@@ -36,6 +36,10 @@ class AudioPlayer():
 		self.noteCounter.stop()
 		self.serv.stop()
 
+	def setTempo(self, tempo):
+		self.dur = 60/(tempo / durations['quarter'] / 4)
+		self.noteCounter.time = self.dur
+
 	def setChords(self, chords, firstTime = False, cNames = None):
 		print "in setChords",cNames
 		self.chords = []
@@ -79,7 +83,7 @@ class AudioPlayer():
 	def _createSynths(self, newBass, newChord):
 		self.bassSeq = Sequence(newBass, self.tempo)
 		self.bassSynth = BassWalkSynth(self.bassSeq)
-		self.chordSeqs = [[Sequence([note],self.tempo)] for note in newChord]
+		self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
 		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
 
 	def _timer(self):
