@@ -48,6 +48,7 @@ scales = {
 }
 
 chords = {
+#todo : decent voice leading
     "maj": [0, 4, 7],#major
     "maj7": [0, 4, 7, 11],
     "maj9": [0, 4, 7, 11, 14],

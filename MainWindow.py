@@ -134,22 +134,26 @@ class CustomFrame(wx.Frame):
 		#stack based logic, will change in the future
 		self.chords.pop()
 		self.chordNotes.pop()
-		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
+		if len(self.chords) > 0:
+			self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self._updateLabel()
 
 	def onPlay(self, event):
 		tempo = int(self.tempoTextBox.GetValue().strip())
 		
+		if len(self.chords) == 0:
+			print "You must use at least one chord"
+			return
 		if tempo < 30 or tempo > 300:
 			print "Tempo must be between 30 and 300 bpm"
 			return
+
 		self.tempoTextBox.Disable()
 		self.btnAdd.Disable()
 		self.btnRemove.Disable()
 		self.btnPlay.Disable()
 		self.btnStop.Enable()
 
-		print "In main window, play",self.chords
 		self.audio.setTempo(tempo)
 		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
 		self.audio.play(tempo)

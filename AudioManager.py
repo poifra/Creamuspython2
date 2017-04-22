@@ -15,6 +15,7 @@ class AudioPlayer():
 		self.firstChord = self.currentChord
 		self.totalCount = 1
 		self.verbose = verbose
+		self.serv.gui(locals())
 
 	def play(self, tempo):
 		self.tempo = tempo
@@ -42,6 +43,7 @@ class AudioPlayer():
 
 	def setChords(self, chords, firstTime = False, cNames = None):
 		print "in setChords",cNames
+	
 		self.chords = []
 		self.bassNotes = []
 		for c in chords:
@@ -51,7 +53,7 @@ class AudioPlayer():
 		self.chords = cycle(self.chords)
 		self.bassNotes = cycle(self.bassNotes)
 		self.chordNames = cycle(cNames)
-
+		
 		self.currentChord = next(self.chords)
 		self.currentBass = next(self.bassNotes)
 		self.currentName = next(self.chordNames)

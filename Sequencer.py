@@ -1,7 +1,7 @@
 # coding:utf-8
 from __future__ import division
 from Chordbook import durations
-from pyo import midiToHz, Metro, Iter, Ceil, Sig, Trig, TrigFunc
+from pyo import midiToHz, Metro, Sig, Trig, TrigFunc
 
 class Sequence:
 	"""Sequence of midi notes and rythms """
@@ -15,15 +15,11 @@ class Sequence:
 		self.time = Sig(0)
 		self.amp = Sig(0)
 		self.playing = False
+
 	def append(self, note):
-			self.notes.append(note)
+		self.notes.append(note)
 			
 	def set_notes(self, notes):
-		prop = 0
-		
-		#self.index = len(self.notes)-1
-		while self.index != 0:
-			prop +=1
 		self._metro.stop()
 		self.notes = notes
 		self.index = 0
