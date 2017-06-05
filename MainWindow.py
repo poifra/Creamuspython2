@@ -52,6 +52,9 @@ class CustomFrame(wx.Frame):
 		self.tempo = self.DEFAULT_TEMPO
 		self.tempoTextBox.Bind(wx.EVT_CHAR, self.checkForNumber)
 
+		self.keyLabel = wx.StaticText(self.panel, id=-1, label="Key : ")
+		self.keyListBox = wx.TextCtrl(self.panel, id=-1)
+
 		self.containerSizer = wx.BoxSizer(wx.VERTICAL)
 		self.chordChooserSizer = wx.BoxSizer(wx.HORIZONTAL)
 		self.inversionSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -74,8 +77,11 @@ class CustomFrame(wx.Frame):
 
 		self.displaySizer.Add(self.chordLabel, 1 , wx.EXPAND)
 
-		self.tempoSizer.Add(self.tempoLabel, 1, wx.LEFT | wx.ALIGN_CENTER, 150)
-		self.tempoSizer.Add(self.tempoTextBox, 1, wx.RIGHT, 150)
+		self.tempoSizer.Add(self.tempoLabel, 1, wx.ALIGN_CENTER)
+		self.tempoSizer.Add(self.tempoTextBox, 1)
+
+		self.tempoSizer.Add(self.keyLabel, 1, wx.ALIGN_CENTER | wx.LEFT, 80)
+		self.tempoSizer.Add(self.keyListBox, 1)
 
 		self.containerSizer.Add(self.chordChooserSizer, 0, wx.EXPAND)
 		self.containerSizer.Add(self.inversionSizer, 0, wx.EXPAND)

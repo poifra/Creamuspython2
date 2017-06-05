@@ -1,7 +1,7 @@
 
 from Chordbook import transpose, durations
 from Sequencer import Sequence, Note
-from Synth import ClassicSynth, BassWalkSynth
+from Synth import ClassicSynth, BassWalkSynth, PianoSynth
 from random import choice
 from itertools import cycle
 from pyo import *
@@ -28,7 +28,7 @@ seqs = [Sequence([n],tempo) for n in realNotes]
 for seq in seqs:
 	seq.play()
 
-synths = [ClassicSynth(seq) for seq in seqs]
+synths = [PianoSynth(seq) for seq in seqs]
 
 for syn in synths:
 	syn.get_out().out()
@@ -47,7 +47,7 @@ def changeChord():
 				seq.stop()
 
 		seqs = [Sequence([n],tempo) for n in newNotes]
-		synths = [ClassicSynth(seq) for seq in seqs]
+		synths = [PianoSynth(seq) for seq in seqs]
 
 	for seq in seqs:
 		if not(seq.isPlaying()):
