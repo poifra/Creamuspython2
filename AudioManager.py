@@ -1,12 +1,15 @@
 from Sequencer import Sequence, Note
 from itertools import cycle
-from Synth import BaseSynth, ClassicSynth, BassWalkSynth
+from Synth import BaseSynth, ClassicSynth, BassWalkSynth, PianoSynth
 from pyo import *
+from AudioEngine import WalkingBass
 from Chordbook import durations, changeOctave
 
 class AudioPlayer():
-	def __init__(self, tempo, chords, chordNames, verbose = True):
+	def __init__(self, tempo, chords, chordNames, key, verbose = True):
 		self.serv = Server().boot()
+		self.engine = WalkingBass(chords, key)
+		self.engine.buildWalkingBass()
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
 		self.currentNote = 1
@@ -41,14 +44,23 @@ class AudioPlayer():
 		self.dur = 60/(tempo / durations['quarter'] / 4)
 		self.noteCounter.time = self.dur
 
+	def setKey(self, key):
+		self.engine.validateKey(key)
+		self.key = key
+
 	def setChords(self, chords, firstTime = False, cNames = None):
 		print "in setChords",cNames
 	
 		self.chords = []
 		self.bassNotes = []
-		for c in chords:
+
+		bassline = self.engine.getBassline()
+		#convert bassline to a list of lists, where each sublist is a bar
+		bassBlocks = [bassline[i:i+4] for i in range(0,len(bassline),4)]
+
+		for i,c in enumerate(chords):
 			self.chords.append(changeOctave(c,amount=2))
-			self.bassNotes.append(c)
+			self.bassNotes.append(bassBlocks[i])
 
 		self.chords = cycle(self.chords)
 		self.bassNotes = cycle(self.bassNotes)
@@ -57,6 +69,7 @@ class AudioPlayer():
 		self.currentChord = next(self.chords)
 		self.currentBass = next(self.bassNotes)
 		self.currentName = next(self.chordNames)
+		
 		self._regenerateMusic(firstTime)
 
 	def _regenerateMusic(self, firstTime = False):
@@ -84,7 +97,7 @@ class AudioPlayer():
 
 	def _createSynths(self, newBass, newChord):
 		self.bassSeq = Sequence(newBass, self.tempo)
-		self.bassSynth = BassWalkSynth(self.bassSeq)
+		self.bassSynth = PianoSynth(self.bassSeq)
 		self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
 		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
 
@@ -92,6 +105,7 @@ class AudioPlayer():
 		if self.currentNote > 4:
 			self.currentChord = next(self.chords)
 			self.currentName = next(self.chordNames)
+			self.currentBass = next(self.bassNotes)
 			self._regenerateMusic()
 			self.currentNote = 1
 

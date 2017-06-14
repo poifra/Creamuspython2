@@ -53,7 +53,8 @@ class CustomFrame(wx.Frame):
 		self.tempoTextBox.Bind(wx.EVT_CHAR, self.checkForNumber)
 
 		self.keyLabel = wx.StaticText(self.panel, id=-1, label="Key : ")
-		self.keyListBox = wx.TextCtrl(self.panel, id=-1)
+		self.keyTextBox = wx.TextCtrl(self.panel, id=-1)
+		self.keyTextBox.SetValue("C")
 
 		self.containerSizer = wx.BoxSizer(wx.VERTICAL)
 		self.chordChooserSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -81,7 +82,7 @@ class CustomFrame(wx.Frame):
 		self.tempoSizer.Add(self.tempoTextBox, 1)
 
 		self.tempoSizer.Add(self.keyLabel, 1, wx.ALIGN_CENTER | wx.LEFT, 80)
-		self.tempoSizer.Add(self.keyListBox, 1)
+		self.tempoSizer.Add(self.keyTextBox, 1)
 
 		self.containerSizer.Add(self.chordChooserSizer, 0, wx.EXPAND)
 		self.containerSizer.Add(self.inversionSizer, 0, wx.EXPAND)
@@ -94,7 +95,7 @@ class CustomFrame(wx.Frame):
 		self.panel.SetSizer(self.containerSizer)
 		self.Centre()
 
-		self.audio = AudioPlayer(self.tempo,self.chordNotes,self.chords)
+		self.audio = AudioPlayer(self.tempo,self.chordNotes,self.chords, self.keyTextBox.GetValue())
 	
 	def _updateLabel(self):
 		self.chordLabel.SetLabel(" -- ".join(self.chords))
@@ -162,6 +163,7 @@ class CustomFrame(wx.Frame):
 
 		self.audio.setTempo(tempo)
 		self.audio.setChords(self.chordNotes, firstTime = False, cNames = self.chords)
+		self.audio.setKey(self.keyTextBox.GetValue())
 		self.audio.play(tempo)
 		print("TWADO PLAY")
 

@@ -19,7 +19,7 @@ Because i'm lazy, midi helper to find chord recipes
 12 C
 '''
 
-#assuming 4/4 time
+#assuming 4/4 time, no dotted notes :(
 durations = {
     "whole":1,
     "half":1/2,

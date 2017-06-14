@@ -55,7 +55,7 @@ class ClassicSynth(BaseSynth):
         self.trans = Noise(mul=self.trans_env_reader)
         self.trans_filter = Biquad(self.trans, freq=1690)
         self.trans_resonator = Biquad(self.trans_filter, q=30, freq=self.freq*4)
-        self.panner = Pan((self.trans_resonator+self.osc).mix(0), mul=(0.1)*self.master_amp, pan=self.master_pan)
+        self.panner = Pan((self.trans_resonator+self.osc).mix(0), mul=(0.5)*self.master_amp, pan=self.master_pan)
         self.last_audio_object = self.panner
 
     def set_notes(self, notes, tempo=96):
