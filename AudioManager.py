@@ -1,3 +1,5 @@
+from __future__ import division
+
 from Sequencer import Sequence, Note
 from itertools import cycle
 from Synth import BaseSynth, ClassicSynth, BassWalkSynth, PianoSynth
@@ -73,8 +75,8 @@ class AudioPlayer():
 		self._regenerateMusic(firstTime)
 
 	def _regenerateMusic(self, firstTime = False):
-		newBass = [Note(n, durations['quarter']) for n in self.currentBass]
-		newChord = [Note(n, durations['half']) for n in self.currentChord]
+		newBass = [Note(n, self.dur) for n in self.currentBass]
+		newChord = [Note(n, self.dur*2) for n in self.currentChord]
 		
 		if firstTime:
 			self._createSynths(newBass, newChord)
