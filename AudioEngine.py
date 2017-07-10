@@ -64,4 +64,5 @@ class WalkingBass(AudioEngine):
 
 class Melody(AudioEngine):
     def __init__(self, chordProgression, key):
+        self.bucketSize = len(transpose(target='major',key=key,octave=5))
         AudioEngine.__init__(self, chordProgression, key)

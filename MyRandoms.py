@@ -46,7 +46,7 @@ def exponMin(x1=5):
 
 def exponMax(x1=5):
 	x1 = __checkZero(x1)
-	val = 1-log(random())/x1
+	val = 1.0-(-log(random())/x1)
 	return __normalize(val)
 
 def biExpon(x1=5):
@@ -89,6 +89,11 @@ def gaussian(x1=0.5,x2=5):
 	val = x2*(rnd-3)*0.33+x1
 	return __normalize(val)
 
+def gaussian2(x1=0.5,x2=5):
+	rnd = sum([random() for _ in range(6)])
+	val = x2*(rnd-3)*0.33+x1
+	return val
+
 def poisson(x1=5,x2=2):
 	poissonTab = 0
 	lastPoissonX1 = -99.0
@@ -110,6 +115,28 @@ def poisson(x1=5,x2=2):
 				j += 1
 	val = poissonBuffer[__pyorand() % poissonTab] /12*x2
 	return __normalize(val)
+
+def poisson_2(x1=5,x2=2):
+	poissonTab = 0
+	lastPoissonX1 = -99.0
+	poissonBuffer = [0 for _ in range(2000)]
+	if x1 < 0.1: x1 = 0.1
+	if x2 < 0.1: x2 = 0.1
+
+	if x1 != lastPoissonX1:
+		lastPoissonX1 = x1
+		poissonTab = 0
+		factorial = 1
+		for i in range(1,13): #interval [1,12]
+			factorial *= i
+			tot = 1000*(pow(e,-x1)*pow(x1,i)/factorial)
+			j = 0
+			while j < tot:
+				poissonBuffer[poissonTab] = i
+				poissonTab += 1
+				j += 1
+	val = poissonBuffer[__pyorand() % poissonTab] /12*x2
+	return val
 
 def walker(x1=0.5,x2=0.5):
 	walkerVal = 0.5
