@@ -1,5 +1,6 @@
 from Chordbook import transpose, shiftFactors
 from random import choice
+import MyRandoms
 
 class AudioEngine:
     def __init__(self, chordProgression, key):
@@ -9,6 +10,10 @@ class AudioEngine:
         self.validateKey(key)
 
     def validateKey(self, key):
+        '''
+        Validates that key given as argument is actually a Key. For the key
+        to be valid, 
+        '''
         if len(key) == 0:
             raise ValueError("No key specified!")
         if len(key) == 3:
@@ -63,6 +68,22 @@ class WalkingBass(AudioEngine):
         return self.bassLine
 
 class Melody(AudioEngine):
-    def __init__(self, chordProgression, key):
-        self.bucketSize = len(transpose(target='major',key=key,octave=5))
+    def __init__(self, chordProgression, key, randomFunction, **kwargs):
         AudioEngine.__init__(self, chordProgression, key)
+        rngInstance = MyRandoms.MyRandoms()
+        scale = transpose(target='major',key=key, octave=5)
+        scaleSize = len(scale)
+        random = [randomFunction(*args) for _ in range(100)]
+        randomRange = max(random) + abs(min(random))
+        bucketSize = randomRange/scaleSize
+        snappedScale = []
+        print bucketSize
+        for x,d in enumerate(random):
+            if maxSize > 0 and x > maxSize:
+                break
+            i = 1
+            while abs(d) > i*bucketSize and i < len(scale):
+                i += 1
+            matchingNote = scale[i-1]
+            snappedScale.append(matchingNote)
+        return snappedScale

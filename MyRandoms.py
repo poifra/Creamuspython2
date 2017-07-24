@@ -6,252 +6,284 @@ from math import log, e, tan
 '''
 Various random generators, implemented from sources present in github.com/belangeo/pyo
 '''
+class MyRandoms:
+	def __init__(self):
+		self.RAND_MAX = 4294967295
+		self.PYO_RAND_SEED = 1
+		self.funcs = {
+			"uniform":self.__uniform,
+			"linearMin":self.__linearMin,
+			"linearMax":self.__linearMax,
+			"triange":self.__triangle,
+			"exponMin":self.__exponMin,
+			"exponMax":self.__exponMax,
+			"biExpon":self.__biExpon,
+			"cauchy":self.__cauchy,
+			"weibull":self.__weibull,
+			"gaussian":self.__gaussian,
+			"gaussian2":self.__gaussian2,
+			"poisson":self.__poisson,
+			"poisson2":self.__poisson_2,
+			"walker":self.__walker,
+			"loopseg":self.__loopseg
+		}
 
-RAND_MAX = 4294967295
-PYO_RAND_SEED = 1
-def __pyorand():
-	global PYO_RAND_SEED
-	PYO_RAND_SEED = (PYO_RAND_SEED * 1664525 + 1013904223) % RAND_MAX
-	return PYO_RAND_SEED
+	def call(self, funcName, **kwargs):
+		argNum = len(kwargs.keys())
+		if argNum == 1:
+			self.x1 = kwargs['x1']
+		elif argNum == 2:
+			self.x1, self.x2 = kwargs['x1'], kwargs['x2']
+		return self.funcs[funcName]()
 
-def __checkZero(val):
-	if val <= 0:
-		return 0.0001
-	return val
+	def addFunc(self,funcName, funcPtr):
+		if funcName in self.funcs.keys():
+			raise ValueError("Function name already taken.")
+		else:
+			self.funcs[funcName] = funcPtr
 
-def __normalize(val):
-	if val < 0:
-		return 0
-	if val > 1:
-		return 1
-	return val
+	def __pyorand(self):
+		self.PYO_RAND_SEED = (self.PYO_RAND_SEED * 1664525 + 1013904223) % self.RAND_MAX
+		return self.PYO_RAND_SEED
 
-def uniform():
-	return random()
+	def __checkZero(self, val):
+		if val <= 0:
+			return 0.0001
+		return val
 
-def linearMin():
-	a = random()
-	b = random()
-	return a if a < b else b
+	def __normalize(self, val):
+		if val < 0:
+			return 0
+		if val > 1:
+			return 1
+		return val
 
-def linearMax():
-	a = random()
-	b = random()
-	return b if a < b else b
+	def __uniform(self):
+		return random()
 
-def triangle():
-	a = random()
-	b = random()
-	return ((a+b)*0.5)
+	def __linearMin(self):
+		a = random()
+		b = random()
+		return a if a < b else b
 
+	def __linearMax(self):
+		a = random()
+		b = random()
+		return b if a < b else b
 
-def exponMin(x1=5):
-	'''
-	expon_min
-	x1: slope {0 = no slope -> 10 = sharp slope}
-	'''
-	x1 = __checkZero(x1)
-	val = -log(random())/x1
-	return __normalize(val)
-
-
-def exponMax(x1=5):
-	'''
-	expon_max
-	x1: slope {0 = no slope -> 10 = sharp slope}
-	'''
-	x1 = __checkZero(x1)
-	val = 1.0-(-log(random())/x1)
-	return __normalize(val)
-
-
-def biExpon(x1=5):
-	'''
-	biexpon
-	x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
-	'''
-	polar = 0
-	val = 0
-	x1 = __checkZero(x1)
-
-	s = random() * 2
-	if s > 1:
-		polar = -1
-		s = 2 - s
-	else:
-		polar = 1
-
-	val = 0.5*(polar*log(s)/x1)+0.5
-
-	return __normalize(val)
-
-	
-def cauchy(x1=5):
-	'''
-	cauchy
-	x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
-	'''
-	rnd = 0.5
-	while rnd == 0.5:
-		rnd = random()
-
-	if (__pyorand() < RAND_MAX/2):
-		d = -1
-	else:
-		d = 1
-
-	val = 0.5*(tan(rnd)*x1*d)+0.5
-	return __normalize(val)
+	def __triangle(self):
+		a = random()
+		b = random()
+		return ((a+b)*0.5)
 
 
-
-def weibull(x1=0.5,x2=1.5):
-	'''
-	weibull
-	x1: mean location {0 -> 1}
-	x2: shape {0.5 = linear min, 1.5 = expon min, 3.5 = gaussian}
-	'''
-	x2 = __checkZero(x2)
-	rnd = 1/(1-random())
-	val = x1*pow(log(rnd),1/x2)
-	return __normalize(val)
+	def __exponMin(self):
+		'''
+		expon_min
+		self.x1: slope {0 = no slope -> 10 = sharp slope}
+		'''
+		self.x1 = __checkZero(self.x1)
+		val = -log(random())/self.x1
+		return self.__normalize(val)
 
 
-def gaussian(x1=0.5,x2=5):
-	'''
-	gaussian
-	x1: mean location {0 -> 1}
-	x2: bandwidth {0 = narrow bandwidth -> 10 = huge bandwidth}
-	'''
-	rnd = sum([random() for _ in range(6)])
-	val = x2*(rnd-3)*0.33+x1
-	return __normalize(val)
+	def __exponMax(self):
+		'''
+		expon_max
+		self.x1: slope {0 = no slope -> 10 = sharp slope}
+		'''
+		self.x1 = self.__checkZero(self.x1)
+		val = 1.0-(-log(random())/self.x1)
+		return self.__normalize(val)
 
-def gaussian2(x1=0.5,x2=5):
-	"""same as gaussian but without normalization"""
-	rnd = sum([random() for _ in range(6)])
-	val = x2*(rnd-3)*0.33+x1
-	return val
 
-def poisson(x1=5,x2=2):
-	"""
-	poisson
-	x1: gravity center {0 = low values -> 10 = high values}
-	x2: compress/expand range {0.1 = full compress -> 4 full expand}
-	"""
-	poissonTab = 0
-	lastPoissonX1 = -99.0
-	poissonBuffer = [0 for _ in range(2000)]
-	if x1 < 0.1: x1 = 0.1
-	if x2 < 0.1: x2 = 0.1
+	def __biExpon(self):
+		'''
+		biexpon
+		self.x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
+		'''
+		polar = 0
+		val = 0
+		self.x1 = self.__checkZero(self.x1)
 
-	if x1 != lastPoissonX1:
-		lastPoissonX1 = x1
+		s = random() * 2
+		if s > 1:
+			polar = -1
+			s = 2 - s
+		else:
+			polar = 1
+
+		val = 0.5*(polar*log(s)/self.x1)+0.5
+
+		return self.__normalize(val)
+
+		
+	def __cauchy(self):
+		'''
+		cauchy
+		self.x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
+		'''
+		rnd = 0.5
+		while rnd == 0.5:
+			rnd = random()
+
+		if (self.__pyorand() < RAND_MAX/2):
+			d = -1
+		else:
+			d = 1
+
+		val = 0.5*(tan(rnd)*self.x1*d)+0.5
+		return self.__normalize(val)
+
+
+
+	def __weibull(self):
+		'''
+		weibull
+		self.x1: mean location {0 -> 1}
+		self.x2: shape {0.5 = linear min, 1.5 = expon min, 3.5 = gaussian}
+		'''
+		self.x2 = self.__checkZero(self.x2)
+		rnd = 1/(1-random())
+		val = self.x1*pow(log(rnd),1/self.x2)
+		return self.__normalize(val)
+
+
+	def __gaussian(self):
+		'''
+		gaussian
+		self.x1: mean location {0 -> 1}
+		self.x2: bandwidth {0 = narrow bandwidth -> 10 = huge bandwidth}
+		'''
+		rnd = sum([random() for _ in range(6)])
+		val = self.x2*(rnd-3)*0.33+self.x1
+		return __normalize(val)
+
+	def __gaussian2(self):
+		"""same as gaussian but without normalization"""
+		rnd = sum([random() for _ in range(6)])
+		val = self.x2*(rnd-3)*0.33+self.x1
+		return val
+
+	def __poisson(self):
+		"""
+		poisson
+		self.x1: gravity center {0 = low values -> 10 = high values}
+		self.x2: compress/expand range {0.1 = full compress -> 4 full expand}
+		"""
 		poissonTab = 0
-		factorial = 1
-		for i in range(1,13): #interval [1,12]
-			factorial *= i
-			tot = 1000*(pow(e,-x1)*pow(x1,i)/factorial)
-			j = 0
-			while j < tot:
-				poissonBuffer[poissonTab] = i
-				poissonTab += 1
-				j += 1
-	val = poissonBuffer[__pyorand() % poissonTab] /12*x2
-	return __normalize(val)
+		lastPoisson = -99.0
+		poissonBuffer = [0 for _ in range(2000)]
+		if self.x1 < 0.1: self.x1 = 0.1
+		if self.x2 < 0.1: self.x2 = 0.1
 
-def poisson_2(x1=5,x2=2):
-	poissonTab = 0
-	lastPoissonX1 = -99.0
-	poissonBuffer = [0 for _ in range(2000)]
-	if x1 < 0.1: x1 = 0.1
-	if x2 < 0.1: x2 = 0.1
+		if self.x1 != lastPoisson:
+			lastPoisson = self.x1
+			poissonTab = 0
+			factorial = 1
+			for i in range(1,13): #interval [1,12]
+				factorial *= i
+				tot = 1000*(pow(e,-self.x1)*pow(self.x1,i)/factorial)
+				j = 0
+				while j < tot:
+					poissonBuffer[poissonTab] = i
+					poissonTab += 1
+					j += 1
+		val = poissonBuffer[self.__pyorand() % poissonTab] /12*self.x2
+		return self.__normalize(val)
 
-	if x1 != lastPoissonX1:
-		lastPoissonX1 = x1
+	def __poisson_2(self):
 		poissonTab = 0
-		factorial = 1
-		for i in range(1,13): #interval [1,12]
-			factorial *= i
-			tot = 1000*(pow(e,-x1)*pow(x1,i)/factorial)
-			j = 0
-			while j < tot:
-				poissonBuffer[poissonTab] = i
-				poissonTab += 1
-				j += 1
-	val = poissonBuffer[__pyorand() % poissonTab] /12*x2
-	return val
+		lastPoisson = -99.0
+		poissonBuffer = [0 for _ in range(2000)]
+		if self.x1 < 0.1: self.x1 = 0.1
+		if self.x2 < 0.1: self.x2 = 0.1
 
-def walker(x1=0.5,x2=0.5):
-	"""
-	walker
-	x1: maximum value {0.1 -> 1}
-	x2: maximum step {0.1 -> 1}
-	"""
-	walkerVal = 0.5
-	if x2 < 0.002: x2 = 0.002
+		if self.x1 != lastPoisson:
+			lastPoisson = self.x1
+			poissonTab = 0
+			factorial = 1
+			for i in range(1,13): #interval [1,12]
+				factorial *= i
+				tot = 1000*(pow(e,-self.x1)*pow(self.x1,i)/factorial)
+				j = 0
+				while j < tot:
+					poissonBuffer[poissonTab] = i
+					poissonTab += 1
+					j += 1
+		val = poissonBuffer[self.__pyorand() % poissonTab] /12*self.x2
+		return val
 
-	modulo = x2*1000
-	d = __pyorand() % 100
+	def __walker(self):
+		"""
+		walker
+		self.x1: maximum value {0.1 -> 1}
+		self.x2: maximum step {0.1 -> 1}
+		"""
+		walkerVal = 0.5
+		if self.x2 < 0.002: self.x2 = 0.002
 
-	if d < 50:
-		walkerVal += (__pyorand()%modulo)*0.001
-	else:
-		walkerVal -= (__pyorand()%modulo)*0.001
-
-	if walkerVal > x1:
-		walkerVal = x1
-	elif walkerVal < 0:
-		walkerVal = 0
-	return walkerVal
-
-def loopseg(x1=0.5,x2=0.5):
-	"""
-	loopseg
-	x1: maximum value {0.1 -> 1}
-	x2: maximum step {0.1 -> 1}
-	"""
-	walkerVal = 0.5
-	loopChoice = loopCountPlay = loopTime = loopCountRec = loopStop = 0
-	loopLen = (__pyorand() % 10) + 3
-	loopBuffer = [0 for _ in range(15)]
-	if loopChoice == 0:
-		loopCountPlay = loopTime = 0
-		if x2 < 0.002: x2 = 0.002
-
-		modulo = x2*1000
-		d = __pyorand()%100
+		modulo = self.x2*1000
+		d = self.__pyorand() % 100
 
 		if d < 50:
-			walkerVal += (__pyorand()%modulo)*0.001
+			walkerVal += (self.__pyorand()%modulo)*0.001
 		else:
-			walkerVal -= (__pyorand()%modulo)*0.001
+			walkerVal -= (self.__pyorand()%modulo)*0.001
 
-		if walkerVal > x1:
-			walkerVal = x1
+		if walkerVal > self.x1:
+			walkerVal = self.x1
 		elif walkerVal < 0:
 			walkerVal = 0
+		return walkerVal
 
-		loopBuffer[loopCountRec] = walkerVal
-		loopCountRec += 1
+	def __loopseg(self):
+		"""
+		loopseg
+		self.x1: maximum value {0.1 -> 1}
+		self.x2: maximum step {0.1 -> 1}
+		"""
+		walkerVal = 0.5
+		loopChoice = loopCountPlay = loopTime = loopCountRec = loopStop = 0
+		loopLen = (self.__pyorand() % 10) + 3
+		loopBuffer = [0 for _ in range(15)]
+		if loopChoice == 0:
+			loopCountPlay = loopTime = 0
+			if self.x2 < 0.002: self.x2 = 0.002
 
-		if loopCountRec < loopLen:
-			loopChoice = 0
+			modulo = self.x2*1000
+			d = self.__pyorand()%100
+
+			if d < 50:
+				walkerVal += (self.__pyorand()%modulo)*0.001
+			else:
+				walkerVal -= (self.__pyorand()%modulo)*0.001
+
+			if walkerVal > self.x1:
+				walkerVal = self.x1
+			elif walkerVal < 0:
+				walkerVal = 0
+
+			loopBuffer[loopCountRec] = walkerVal
+			loopCountRec += 1
+
+			if loopCountRec < loopLen:
+				loopChoice = 0
+			else:
+				loopChoice = 1
+				loopStop = (self.__pyorand()%4)+1
+
 		else:
-			loopChoice = 1
-			loopStop = (__pyorand()%4)+1
+			loopCountRec = 0
+			walkerVal = loopBuffer[loopCountPlay]
+			loopCountPlay += 1
 
-	else:
-		loopCountRec = 0
-		walkerVal = loopBuffer[loopCountPlay]
-		loopCountPlay += 1
-
-		if loopCountPlay < loopLen:
-			loopChoice = 1
-		else:
-			loopCountPlay = 0
-			loopTime += 1
-		if loopTime == loopStop:
-			loopChoice = 0
-			loopLen = (__pyorand()%10)+3
-	return walkerVal
+			if loopCountPlay < loopLen:
+				loopChoice = 1
+			else:
+				loopCountPlay = 0
+				loopTime += 1
+			if loopTime == loopStop:
+				loopChoice = 0
+				loopLen = (self.__pyorand()%10)+3
+		return walkerVal
