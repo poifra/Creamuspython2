@@ -2,6 +2,11 @@ from __future__ import division
 from random import random
 from math import log, e, tan
 
+
+'''
+Various random generators, implemented from sources present in github.com/belangeo/pyo
+'''
+
 RAND_MAX = 4294967295
 PYO_RAND_SEED = 1
 def __pyorand():
@@ -39,17 +44,32 @@ def triangle():
 	b = random()
 	return ((a+b)*0.5)
 
+
 def exponMin(x1=5):
+	'''
+	expon_min
+	x1: slope {0 = no slope -> 10 = sharp slope}
+	'''
 	x1 = __checkZero(x1)
 	val = -log(random())/x1
 	return __normalize(val)
 
+
 def exponMax(x1=5):
+	'''
+	expon_max
+	x1: slope {0 = no slope -> 10 = sharp slope}
+	'''
 	x1 = __checkZero(x1)
 	val = 1.0-(-log(random())/x1)
 	return __normalize(val)
 
+
 def biExpon(x1=5):
+	'''
+	biexpon
+	x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
+	'''
 	polar = 0
 	val = 0
 	x1 = __checkZero(x1)
@@ -65,7 +85,12 @@ def biExpon(x1=5):
 
 	return __normalize(val)
 
+	
 def cauchy(x1=5):
+	'''
+	cauchy
+	x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
+	'''
 	rnd = 0.5
 	while rnd == 0.5:
 		rnd = random()
@@ -78,23 +103,42 @@ def cauchy(x1=5):
 	val = 0.5*(tan(rnd)*x1*d)+0.5
 	return __normalize(val)
 
+
+
 def weibull(x1=0.5,x2=1.5):
+	'''
+	weibull
+	x1: mean location {0 -> 1}
+	x2: shape {0.5 = linear min, 1.5 = expon min, 3.5 = gaussian}
+	'''
 	x2 = __checkZero(x2)
 	rnd = 1/(1-random())
 	val = x1*pow(log(rnd),1/x2)
 	return __normalize(val)
 
+
 def gaussian(x1=0.5,x2=5):
+	'''
+	gaussian
+	x1: mean location {0 -> 1}
+	x2: bandwidth {0 = narrow bandwidth -> 10 = huge bandwidth}
+	'''
 	rnd = sum([random() for _ in range(6)])
 	val = x2*(rnd-3)*0.33+x1
 	return __normalize(val)
 
 def gaussian2(x1=0.5,x2=5):
+	"""same as gaussian but without normalization"""
 	rnd = sum([random() for _ in range(6)])
 	val = x2*(rnd-3)*0.33+x1
 	return val
 
 def poisson(x1=5,x2=2):
+	"""
+	poisson
+	x1: gravity center {0 = low values -> 10 = high values}
+	x2: compress/expand range {0.1 = full compress -> 4 full expand}
+	"""
 	poissonTab = 0
 	lastPoissonX1 = -99.0
 	poissonBuffer = [0 for _ in range(2000)]
@@ -139,6 +183,11 @@ def poisson_2(x1=5,x2=2):
 	return val
 
 def walker(x1=0.5,x2=0.5):
+	"""
+	walker
+	x1: maximum value {0.1 -> 1}
+	x2: maximum step {0.1 -> 1}
+	"""
 	walkerVal = 0.5
 	if x2 < 0.002: x2 = 0.002
 
@@ -157,6 +206,11 @@ def walker(x1=0.5,x2=0.5):
 	return walkerVal
 
 def loopseg(x1=0.5,x2=0.5):
+	"""
+	loopseg
+	x1: maximum value {0.1 -> 1}
+	x2: maximum step {0.1 -> 1}
+	"""
 	walkerVal = 0.5
 	loopChoice = loopCountPlay = loopTime = loopCountRec = loopStop = 0
 	loopLen = (__pyorand() % 10) + 3
