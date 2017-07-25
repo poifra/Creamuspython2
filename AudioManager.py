@@ -10,8 +10,8 @@ from Chordbook import durations, changeOctave
 class AudioPlayer():
 	def __init__(self, tempo, chords, chordNames, key, verbose = True):
 		self.serv = Server().boot()
-		self.engine = WalkingBass(chords, key)
-		self.engine.buildWalkingBass()
+		self.bassWalk = WalkingBass(chords, key)
+		self.bassWalk.buildWalkingBass()
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
 		self.currentNote = 1
@@ -47,7 +47,7 @@ class AudioPlayer():
 		self.noteCounter.time = self.dur
 
 	def setKey(self, key):
-		self.engine.validateKey(key)
+		self.bassWalk.validateKey(key)
 		self.key = key
 
 	def setChords(self, chords, firstTime = False, cNames = None):
@@ -56,7 +56,7 @@ class AudioPlayer():
 		self.chords = []
 		self.bassNotes = []
 
-		bassline = self.engine.getBassline()
+		bassline = self.bassWalk.getBassline()
 		#convert bassline to a list of lists, where each sublist is a bar
 		bassBlocks = [bassline[i:i+4] for i in range(0,len(bassline),4)]
 

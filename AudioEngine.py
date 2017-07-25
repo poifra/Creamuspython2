@@ -12,8 +12,13 @@ class AudioEngine:
     def validateKey(self, key):
         '''
         Validates that key given as argument is actually a Key. For the key
-        to be valid, 
+        to be valid, It needs to start with either one of A,B,C,D,E,F,G
+        and have a # or b after and can be minor eg. F#m
+
+        I might redo this with a regex ¯\_(ツ)_/¯
         '''
+        if re.match(pattern,key) is None:
+            return 
         if len(key) == 0:
             raise ValueError("No key specified!")
         if len(key) == 3:
@@ -68,16 +73,19 @@ class WalkingBass(AudioEngine):
         return self.bassLine
 
 class Melody(AudioEngine):
-    def __init__(self, chordProgression, key, randomFunction, **kwargs):
+    def __init__(self, chordProgression, key):
         AudioEngine.__init__(self, chordProgression, key)
-        rngInstance = MyRandoms.MyRandoms()
+
+        self.rngInstance = MyRandoms.MyRandoms()
+        
+    def buildMelody(self, randomFunction, **kwargs)
+        random = [rngInstance.call(randomFunction,kwargs) for _ in range(100)] 
         scale = transpose(target='major',key=key, octave=5)
         scaleSize = len(scale)
-        random = [randomFunction(*args) for _ in range(100)]
         randomRange = max(random) + abs(min(random))
         bucketSize = randomRange/scaleSize
-        snappedScale = []
-        print bucketSize
+
+        self.snappedScale = []
         for x,d in enumerate(random):
             if maxSize > 0 and x > maxSize:
                 break
@@ -85,5 +93,13 @@ class Melody(AudioEngine):
             while abs(d) > i*bucketSize and i < len(scale):
                 i += 1
             matchingNote = scale[i-1]
-            snappedScale.append(matchingNote)
-        return snappedScale
+            self.snappedScale.append(matchingNote)
+
+    def getNextNote(self):
+        currentNote = self.snappedScale[self.counter % ]
+        self.counter += 1
+        return currentNote
+
+    def getMelody(self):
+        return self.snappedScale
+
