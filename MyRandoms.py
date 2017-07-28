@@ -11,21 +11,21 @@ class MyRandoms:
 		self.RAND_MAX = 4294967295
 		self.PYO_RAND_SEED = 1
 		self.funcs = {
-			"uniform":self.__uniform,
-			"linearMin":self.__linearMin,
-			"linearMax":self.__linearMax,
-			"triange":self.__triangle,
-			"exponMin":self.__exponMin,
-			"exponMax":self.__exponMax,
-			"biExpon":self.__biExpon,
-			"cauchy":self.__cauchy,
-			"weibull":self.__weibull,
-			"gaussian":self.__gaussian,
-			"gaussian2":self.__gaussian2,
-			"poisson":self.__poisson,
-			"poisson2":self.__poisson_2,
-			"walker":self.__walker,
-			"loopseg":self.__loopseg
+			"uniform" 	: self.__uniform,
+			"linearMin" : self.__linearMin,
+			"linearMax" : self.__linearMax,
+			"triange" 	: self.__triangle,
+			"exponMin" 	: self.__exponMin,
+			"exponMax" 	: self.__exponMax,
+			"biExpon" 	: self.__biExpon,
+			"cauchy" 	: self.__cauchy,
+			"weibull" 	: self.__weibull,
+			"gaussian" 	: self.__gaussian,
+			"gaussian2" : self.__gaussian2,
+			"poisson" 	: self.__poisson,
+			"poisson2" 	: self.__poisson_2,
+			"walker" 	: self.__walker,
+			"loopseg" 	: self.__loopseg
 		}
 
 	def call(self, funcName, **kwargs):
