@@ -1,3 +1,5 @@
+#encoding:utf-8
+
 from Chordbook import transpose, shiftFactors
 from random import choice
 import MyRandoms
@@ -17,8 +19,6 @@ class AudioEngine:
 
         I might redo this with a regex ¯\_(ツ)_/¯
         '''
-        if re.match(pattern,key) is None:
-            return 
         if len(key) == 0:
             raise ValueError("No key specified!")
         if len(key) == 3:
@@ -78,8 +78,9 @@ class Melody(AudioEngine):
 
         self.rngInstance = MyRandoms.MyRandoms()
         
-    def buildMelody(self, randomFunction, **kwargs)
-        random = [rngInstance.call(randomFunction,kwargs) for _ in range(100)] 
+    def buildMelody(self, randomFunction, **kwargs):
+        print kwargs
+        random = [self.rngInstance.call(randomFunction, kwargs) for _ in range(100)] 
         scale = transpose(target='major',key=key, octave=5)
         scaleSize = len(scale)
         randomRange = max(random) + abs(min(random))
@@ -96,7 +97,7 @@ class Melody(AudioEngine):
             self.snappedScale.append(matchingNote)
 
     def getNextNote(self):
-        currentNote = self.snappedScale[self.counter % ]
+        currentNote = self.snappedScale[self.counter % len(self.snappedScale)]
         self.counter += 1
         return currentNote
 

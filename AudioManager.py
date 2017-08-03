@@ -4,7 +4,7 @@ from Sequencer import Sequence, Note
 from itertools import cycle
 from Synth import BaseSynth, ClassicSynth, BassWalkSynth, PianoSynth
 from pyo import *
-from AudioEngine import WalkingBass
+from AudioEngine import WalkingBass, Melody
 from Chordbook import durations, changeOctave
 
 class AudioPlayer():
@@ -15,7 +15,7 @@ class AudioPlayer():
 		self.bassWalk.buildWalkingBass()
 
 		self.melody = Melody(chords, key)
-		self.melody.buildMelody('uniform')
+		self.melody.buildMelody('loopseg', x1=0.3, x2=0.3)
 
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
@@ -48,7 +48,9 @@ class AudioPlayer():
 		self.serv.stop()
 
 	def setTempo(self, tempo):
+		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
+		self.noteCounter.setTime(self.dur)
 		self.noteCounter.time = self.dur
 
 	def setKey(self, key):
@@ -83,16 +85,21 @@ class AudioPlayer():
 	def _regenerateMusic(self, firstTime = False):
 		newBass = [Note(n, self.dur) for n in self.currentBass]
 		newChord = [Note(n, self.dur*2) for n in self.currentChord]
-		
+		newMelody = self.__buildMelody()
+
 		if firstTime:
-			self._createSynths(newBass, newChord)
+			self._createSynths(newBass, newChord, newMelody)
 		else:
 			if self.bassSeq.isPlaying():
 				self.bassSeq.stop()
+
+			if self.melodySeq.isPlaying():
+				self.melodySeq.stop()
+
 			for seq in self.chordSeqs:
 				if seq.isPlaying:
 					seq.stop()
-			self._createSynths(newBass, newChord)
+			self._createSynths(newBass, newChord, newMelody)
 		self.bassSynth.get_out().out()
 		if not(self.bassSeq.isPlaying()):
 			self.bassSeq.play()
@@ -106,8 +113,12 @@ class AudioPlayer():
 	def _createSynths(self, newBass, newChord):
 		self.bassSeq = Sequence(newBass, self.tempo)
 		self.bassSynth = PianoSynth(self.bassSeq)
+
 		self.chordSeqs = [Sequence([note],self.tempo) for note in newChord]
 		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
+
+		self.melodySeq = Sequence(newMelody, self.tempo)
+		self.melodySynth = BassWalkSynth(self.melodySeq)
 
 	def _timer(self):
 		if self.currentNote > 4:
@@ -122,3 +133,8 @@ class AudioPlayer():
 			print "Current Chord="+str(self.currentName)
 		self.currentNote += self.dur
 		self.totalCount += 1
+
+	def __buildMelody(self):
+		#wat
+		speed = durations[random.choice(list(durations.keys()))]
+		newNote = Note(self.melody.getNext)
