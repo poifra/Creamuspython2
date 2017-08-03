@@ -1,3 +1,4 @@
+#encoding:utf-8
 from __future__ import division
 from random import random
 from math import log, e, tan
