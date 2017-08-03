@@ -91,6 +91,7 @@ class AudioPlayer():
 		if firstTime:
 			self._createSynths(newBass, newChord, newMelody)
 		else:
+			#stop everything
 			if self.bassSeq.isPlaying():
 				self.bassSeq.stop()
 
@@ -100,13 +101,22 @@ class AudioPlayer():
 			for seq in self.chordSeqs:
 				if seq.isPlaying:
 					seq.stop()
+
 			self._createSynths(newBass, newChord, newMelody)
+
+		#launch all the things
 		self.bassSynth.get_out().out()
+		self.melodySynth.get_out().out()
+
 		if not(self.bassSeq.isPlaying()):
 			self.bassSeq.play()
 
+		if not(self.melodySeq.isPlaying()):
+			self.melodySeq.play()
+
 		for s in self.chordSynths:
 			s.get_out().out()
+
 		for seq in self.chordSeqs:
 			if not(seq.isPlaying()):
 				seq.play()
@@ -132,10 +142,17 @@ class AudioPlayer():
 		if self.verbose:
 			print "Current note="+str(self.currentNote)+" Total count="+str(self.totalCount)
 			print "Current Chord="+str(self.currentName)
+
 		self.currentNote += self.dur
 		self.totalCount += 1
 
 	def __buildMelody(self):
+		noteLst = []
+		
 		#wat
-		speed = durations[random.choice(list(durations.keys()))]
-		newNote = Note(self.melody.getNext)
+		for n in range(100):
+			speed = durations[random.choice(list(durations.keys()))]
+			newNote = Note(self.melody.getNextNote(), speed)
+			noteLst.append(newNote)
+
+		return noteLst
