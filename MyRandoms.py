@@ -158,7 +158,7 @@ class MyRandoms:
 		'''
 		rnd = sum([random() for _ in range(6)])
 		val = self.x2*(rnd-3)*0.33+self.x1
-		return __normalize(val)
+		return self.__normalize(val)
 
 	def __gaussian2(self):
 		"""same as gaussian but without normalization"""

@@ -16,7 +16,7 @@ class AudioPlayer():
 		self.bassWalk.buildWalkingBass()
 
 		self.melody = Melody(chords, key)
-		self.melody.buildMelody('loopseg', x1=0.3, x2=0.3)
+		self.melody.buildMelody('uniform', x1=0.3, x2=0.3)
 
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
@@ -41,6 +41,9 @@ class AudioPlayer():
 		for seq in self.chordSeqs:
 			if seq.isPlaying:
 				seq.stop()
+
+		if self.melodySeq.isPlaying():
+			self.melodySeq.stop()
 
 		self.currentNote = 1
 		self.currentChord = self.firstChord
@@ -95,12 +98,12 @@ class AudioPlayer():
 			if self.bassSeq.isPlaying():
 				self.bassSeq.stop()
 
-			if self.melodySeq.isPlaying():
-				self.melodySeq.stop()
-
 			for seq in self.chordSeqs:
 				if seq.isPlaying:
 					seq.stop()
+
+			if self.melodySeq.isPlaying():
+				self.melodySeq.stop()
 
 			self._createSynths(newBass, newChord, newMelody)
 
@@ -111,15 +114,17 @@ class AudioPlayer():
 		if not(self.bassSeq.isPlaying()):
 			self.bassSeq.play()
 
-		if not(self.melodySeq.isPlaying()):
-			self.melodySeq.play()
-
 		for s in self.chordSynths:
 			s.get_out().out()
 
 		for seq in self.chordSeqs:
 			if not(seq.isPlaying()):
 				seq.play()
+
+
+		if not(self.melodySeq.isPlaying()):
+			self.melodySeq.play()
+
 
 	def _createSynths(self, newBass, newChord, newMelody):
 		self.bassSeq = Sequence(newBass, self.tempo)
@@ -151,10 +156,9 @@ class AudioPlayer():
 		
 		#wat
 		for n in range(100):
-		#	value = random.choice(list(durations.keys()))
-			value = 'eigth'
-			#while value == 'whole' or value == 'half':
-			#	value = random.choice(list(durations.keys()))
+			value = random.choice(list(durations.keys()))
+			while value == 'whole' or value == 'half':
+				value = random.choice(list(durations.keys()))
 			speed = durations[value]
 			newNote = Note(self.melody.getNextNote(), speed)
 			noteLst.append(newNote)

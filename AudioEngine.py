@@ -94,6 +94,7 @@ class Melody(AudioEngine):
                 i += 1
             matchingNote = scale[i-1]
             self.snappedScale.append(matchingNote)
+        print self.snappedScale
 
     def getNextNote(self):
         currentNote = self.snappedScale[self.counter % len(self.snappedScale)]
