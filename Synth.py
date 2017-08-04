@@ -93,7 +93,7 @@ class ChorusSynth(BaseSynth):
     def __init__(self, sequence, amp = 1, pan = 0.5):
         self.SIZE = 5
         BaseSynth.__init__(self, sequence, amp, pan)
-        self.vibrato = Sine(freq=1, mul=2)
+        self.vibrato = Sine(freq=1, mul=1)
         #self.sig = SineLoop(freq=[self.freq*(random.uniform(0.990,1.01)) for _ in range(self.SIZE)],feedback=0.1,mul=1.0/(5*self.SIZE)-self.vibrato)
         self.sig = SineLoop(freq=self.freq)
         self.chorus = Chorus(self.sig)
