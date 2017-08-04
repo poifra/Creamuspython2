@@ -3,7 +3,7 @@ from __future__ import division
 
 from Sequencer import Sequence, Note
 from itertools import cycle
-from Synth import BaseSynth, ClassicSynth, BassWalkSynth, PianoSynth
+from Synth import BaseSynth, ClassicSynth, ChorusSynth, PianoSynth
 from pyo import *
 from AudioEngine import WalkingBass, Melody
 from Chordbook import durations, changeOctave
@@ -121,7 +121,7 @@ class AudioPlayer():
 			if not(seq.isPlaying()):
 				seq.play()
 
-	def _createSynths(self, newBass, newChord):
+	def _createSynths(self, newBass, newChord, newMelody):
 		self.bassSeq = Sequence(newBass, self.tempo)
 		self.bassSynth = PianoSynth(self.bassSeq)
 
@@ -129,7 +129,7 @@ class AudioPlayer():
 		self.chordSynths = [ClassicSynth(c,amp=0.1) for c in self.chordSeqs]
 
 		self.melodySeq = Sequence(newMelody, self.tempo)
-		self.melodySynth = BassWalkSynth(self.melodySeq)
+		self.melodySynth = ChorusSynth(self.melodySeq)
 
 	def _timer(self):
 		if self.currentNote > 4:
@@ -151,7 +151,11 @@ class AudioPlayer():
 		
 		#wat
 		for n in range(100):
-			speed = durations[random.choice(list(durations.keys()))]
+		#	value = random.choice(list(durations.keys()))
+			value = 'eigth'
+			#while value == 'whole' or value == 'half':
+			#	value = random.choice(list(durations.keys()))
+			speed = durations[value]
 			newNote = Note(self.melody.getNextNote(), speed)
 			noteLst.append(newNote)
 

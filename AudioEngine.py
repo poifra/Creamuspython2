@@ -79,7 +79,6 @@ class Melody(AudioEngine):
         self.rngInstance = MyRandoms.MyRandoms()
         
     def buildMelody(self, randomFunction, maxSize=0, **kwargs):
-        print kwargs
         random = [self.rngInstance.call(randomFunction, **kwargs) for _ in range(100)] 
         scale = transpose(target='major',key=self.key, octave=5)
         scaleSize = len(scale)
