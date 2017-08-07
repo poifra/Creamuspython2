@@ -1,6 +1,6 @@
 #encoding:utf-8
 from __future__ import division
-from random import random
+from random import random, randint
 from math import log, e, tan
 
 
@@ -10,7 +10,7 @@ Various random generators, implemented from sources present in github.com/belang
 class MyRandoms:
 	def __init__(self):
 		self.RAND_MAX = 4294967295
-		self.PYO_RAND_SEED = 1
+		self.PYO_RAND_SEED = randint(1, self.RAND_MAX)
 		self.x1 = None
 		self.x2 = None
 		self.funcs = {

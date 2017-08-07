@@ -11,6 +11,12 @@ class AudioEngine:
         self.counter = 0
         self.validateKey(key)
 
+    def setChordProgression(self, chordProgression, key):
+        self.chordProgression = chordProgression
+        self.size = len(self.chordProgression)*4
+        self.counter = 0
+        self.validateKey(key)
+
     def validateKey(self, key):
         '''
         Validates that key given as argument is actually a Key. For the key
@@ -45,13 +51,14 @@ class WalkingBass(AudioEngine):
     def __init__(self, chordProgression, key):
         AudioEngine.__init__(self, chordProgression, key)
 
+    def setChordProgression(self, chordProgression, key):
+        AudioEngine.setChordProgression(self, chordProgression, key)
+        self.buildWalkingBass()
+
     def buildWalkingBass(self):
         chordTones = self.chordProgression
         self.bassLine = list()
-        if self.mode == 'major':
-            scale = transpose(key=self.key, target='minor', octave=3)
-        else:
-            scale = transpose(key=self.key, target='major', octave=3)
+        scale = transpose(key=self.key, target=self.mode, octave=3)
 
         for i in range(self.size):
             pos = i % 4
@@ -77,10 +84,13 @@ class Melody(AudioEngine):
         AudioEngine.__init__(self, chordProgression, key)
 
         self.rngInstance = MyRandoms.MyRandoms()
+
+    def setChordProgression(self, chordProgression, key):
+        AudioEngine.setChordProgression(self, chordProgression, key)
         
     def buildMelody(self, randomFunction, maxSize=0, **kwargs):
         random = [self.rngInstance.call(randomFunction, **kwargs) for _ in range(100)] 
-        scale = transpose(target='major',key=self.key, octave=5)
+        scale = transpose(target=self.mode ,key=self.key, octave=6)
         scaleSize = len(scale)
         randomRange = max(random) + abs(min(random))
         bucketSize = randomRange/scaleSize

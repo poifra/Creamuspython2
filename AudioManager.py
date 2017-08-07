@@ -16,7 +16,7 @@ class AudioPlayer():
 		self.bassWalk.buildWalkingBass()
 
 		self.melody = Melody(chords, key)
-		self.melody.buildMelody('uniform', x1=0.3, x2=0.3)
+		self.melody.buildMelody('loopseg', x1=1, x2=0.3)
 
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
@@ -63,10 +63,12 @@ class AudioPlayer():
 		self.key = key
 
 	def setChords(self, chords, firstTime = False, cNames = None):
-		print "in setChords",cNames
 	
 		self.chords = []
 		self.bassNotes = []
+
+		self.bassWalk.setChordProgression(chords, 'C') #TODO : change this
+		self.melody.setChordProgression(chords,'C') #TODO : change this
 
 		bassline = self.bassWalk.getBassline()
 		#convert bassline to a list of lists, where each sublist is a bar
@@ -87,8 +89,8 @@ class AudioPlayer():
 		self._regenerateMusic(firstTime)
 
 	def _regenerateMusic(self, firstTime = False):
-		newBass = [Note(n, self.dur) for n in self.currentBass]
-		newChord = [Note(n, self.dur*2) for n in self.currentChord]
+		newBass = [Note(n, self.dur/4) for n in self.currentBass]
+		newChord = [Note(n, self.dur) for n in self.currentChord]
 		newMelody = self.__buildMelody()
 
 		if firstTime:
