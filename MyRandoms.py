@@ -232,16 +232,23 @@ class MyRandoms:
 		"""
 		walkerVal = 0.5
 		
-		if self.x2 < 0.002 or self.x1 == None: self.x2 = 0.002
-		if self.x2 < 0.002 or self.x2 == None: self.x2 = 0.002
+		if self.x1 < 0.002 or self.x1 == None: 
+			self.x1 = 1.0
+		
+		if self.x2 < 0.002 or self.x2 == None: 
+			self.x2 = 0.15
 		
 		modulo = int(self.x2*1000)
 		d = self.__pyorand() % 100
 
+		print modulo, d
+
 		if d < 50:
-			walkerVal += (self.__pyorand()%modulo)*0.001
+			walkerVal += (int(self.__pyorand()%modulo))*0.001
 		else:
-			walkerVal -= (self.__pyorand()%modulo)*0.001
+			walkerVal -= (int(self.__pyorand()%modulo))*0.001
+
+		print "walkerVal ", walkerVal
 
 		if walkerVal > self.x1:
 			walkerVal = self.x1
@@ -255,13 +262,16 @@ class MyRandoms:
 		self.x1: maximum value {0.1 -> 1}
 		self.x2: maximum step {0.1 -> 1}
 		"""
-		if self.x2 < 0.002 or self.x1 == None: self.x2 = 0.002
-		if self.x2 < 0.002 or self.x2 == None: self.x2 = 0.002
+		if self.x1 < 0.002 or self.x1 == None: 
+			self.x1 = 1
+		if self.x2 < 0.002 or self.x2 == None: 
+			self.x2 = 0.15
 
 		walkerVal = 0.5
 		loopChoice = loopCountPlay = loopTime = loopCountRec = loopStop = 0
 		loopLen = (self.__pyorand() % 10) + 3
 		loopBuffer = [0 for _ in range(15)]
+		
 		if loopChoice == 0:
 			loopCountPlay = loopTime = 0
 			if self.x2 < 0.002: self.x2 = 0.002

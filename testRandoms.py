@@ -21,5 +21,6 @@ def testFCTS():
 		print k, mean(v), median(v), mode(v)
 		print v
 
+
 if __name__=='__main__':
 	testFCTS()
