@@ -11,6 +11,8 @@ class MyRandoms:
 	def __init__(self):
 		self.RAND_MAX = 4294967295
 		self.PYO_RAND_SEED = 1
+		self.x1 = None
+		self.x2 = None
 		self.funcs = {
 			"uniform" 	: self.__uniform,
 			"linearMin" : self.__linearMin,
@@ -48,11 +50,12 @@ class MyRandoms:
 		return self.PYO_RAND_SEED
 
 	def __checkZero(self, val):
-		if val <= 0:
+		if val <= 0 or val == None:
 			return 0.0001
 		return val
 
 	def __normalize(self, val):
+		#this doesnt sound right
 		if val < 0:
 			return 0
 		if val > 1:
@@ -83,7 +86,7 @@ class MyRandoms:
 		expon_min
 		self.x1: slope {0 = no slope -> 10 = sharp slope}
 		'''
-		self.x1 = __checkZero(self.x1)
+		self.x1 = self.__checkZero(self.x1)
 		val = -log(random())/self.x1
 		return self.__normalize(val)
 
@@ -124,11 +127,12 @@ class MyRandoms:
 		cauchy
 		self.x1: bandwidth {0 = huge bandwidth -> 10 = narrow bandwidth}
 		'''
+		self.x1 = self.__checkZero(self.x1)
 		rnd = 0.5
 		while rnd == 0.5:
 			rnd = random()
 
-		if (self.__pyorand() < RAND_MAX/2):
+		if (self.__pyorand() < self.RAND_MAX/2):
 			d = -1
 		else:
 			d = 1
@@ -144,6 +148,7 @@ class MyRandoms:
 		self.x1: mean location {0 -> 1}
 		self.x2: shape {0.5 = linear min, 1.5 = expon min, 3.5 = gaussian}
 		'''
+		self.x1 = self.__checkZero(self.x1)
 		self.x2 = self.__checkZero(self.x2)
 		rnd = 1/(1-random())
 		val = self.x1*pow(log(rnd),1/self.x2)
@@ -156,12 +161,16 @@ class MyRandoms:
 		self.x1: mean location {0 -> 1}
 		self.x2: bandwidth {0 = narrow bandwidth -> 10 = huge bandwidth}
 		'''
+		self.x1 = self.__checkZero(self.x1)
+		self.x2 = self.__checkZero(self.x2)
 		rnd = sum([random() for _ in range(6)])
 		val = self.x2*(rnd-3)*0.33+self.x1
 		return self.__normalize(val)
 
 	def __gaussian2(self):
 		"""same as gaussian but without normalization"""
+		self.x1 = self.__checkZero(self.x1)
+		self.x2 = self.__checkZero(self.x2)
 		rnd = sum([random() for _ in range(6)])
 		val = self.x2*(rnd-3)*0.33+self.x1
 		return val
@@ -175,8 +184,8 @@ class MyRandoms:
 		poissonTab = 0
 		lastPoisson = -99.0
 		poissonBuffer = [0 for _ in range(2000)]
-		if self.x1 < 0.1: self.x1 = 0.1
-		if self.x2 < 0.1: self.x2 = 0.1
+		if self.x1 < 0.1 or self.x1 == None: self.x1 = 0.1
+		if self.x2 < 0.1 or self.x2 == None: self.x2 = 0.1
 
 		if self.x1 != lastPoisson:
 			lastPoisson = self.x1
@@ -197,8 +206,8 @@ class MyRandoms:
 		poissonTab = 0
 		lastPoisson = -99.0
 		poissonBuffer = [0 for _ in range(2000)]
-		if self.x1 < 0.1: self.x1 = 0.1
-		if self.x2 < 0.1: self.x2 = 0.1
+		if self.x1 < 0.1 or self.x1 == None : self.x1 = 0.1
+		if self.x2 < 0.1 or self.x2 == None : self.x2 = 0.1
 
 		if self.x1 != lastPoisson:
 			lastPoisson = self.x1
@@ -222,9 +231,11 @@ class MyRandoms:
 		self.x2: maximum step {0.1 -> 1}
 		"""
 		walkerVal = 0.5
-		if self.x2 < 0.002: self.x2 = 0.002
-
-		modulo = self.x2*1000
+		
+		if self.x2 < 0.002 or self.x1 == None: self.x2 = 0.002
+		if self.x2 < 0.002 or self.x2 == None: self.x2 = 0.002
+		
+		modulo = int(self.x2*1000)
 		d = self.__pyorand() % 100
 
 		if d < 50:
@@ -244,6 +255,9 @@ class MyRandoms:
 		self.x1: maximum value {0.1 -> 1}
 		self.x2: maximum step {0.1 -> 1}
 		"""
+		if self.x2 < 0.002 or self.x1 == None: self.x2 = 0.002
+		if self.x2 < 0.002 or self.x2 == None: self.x2 = 0.002
+
 		walkerVal = 0.5
 		loopChoice = loopCountPlay = loopTime = loopCountRec = loopStop = 0
 		loopLen = (self.__pyorand() % 10) + 3
@@ -252,7 +266,7 @@ class MyRandoms:
 			loopCountPlay = loopTime = 0
 			if self.x2 < 0.002: self.x2 = 0.002
 
-			modulo = self.x2*1000
+			modulo = int(self.x2*1000)
 			d = self.__pyorand()%100
 
 			if d < 50:

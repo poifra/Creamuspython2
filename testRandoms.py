@@ -12,13 +12,14 @@ def mode(lst):
 	return str(max(set(lst), key=lst.count))
 
 def testFCTS():
+	rngInstance = mr.MyRandoms()
 	results = {}
-	for name,f in getmembers(mr,isfunction):
-		if '__' in name:
-			continue
-		results[name] = [f() for _ in range(1000)]
+	for func in rngInstance.funcs.keys():
+		results[func] = [rngInstance.call(func) for _ in range(100)]
+
 	for k,v in results.items():
-		print k+" mean="+mean(v)+" median="+median(v)+" mode="+mode(v)
+		print k, mean(v), median(v), mode(v)
+		print v
 
 if __name__=='__main__':
 	testFCTS()
