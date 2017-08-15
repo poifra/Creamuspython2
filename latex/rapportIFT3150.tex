@@ -5,7 +5,7 @@
 %%                                                         %%
 %% Then, a third guy - me - put in some modifications.     %%
 %%                                                         %%
-%% MUS2323 - Plan de projet                                %%
+%%                IFT3150 - Rapport                        %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[letterpaper,12pt]{scrartcl}
@@ -80,6 +80,7 @@
 
 % Document specific
 \usepackage{hyperref}
+\usepackage{amssymb}
 \pagestyle{empty}
 
 \begin{document}
@@ -115,19 +116,20 @@
 
 	\newpage
 	\pagestyle{plain}
-	\section{Plan de travail}
+	\section{Plan de travail initial}
 	
-	\subsection{Énoncé initial}
+	\subsection{Énoncé}
 	Il s'agit de complémenter une application qui permet actuellement à l'utilisateur de construire des progressions d'accords arbitraires. Le but du projet est de permettre au programme de construire une mélodie agréable qui accompagne les accords. Pour ce faire, il faut tout d'abord déterminer quelle est la tonalité de la progression. Ensuite, il faut établir quelle(s) gammes peuvent être utilisées, en se basant sur les notes des accords présents. Vient ensuite la partie la plus difficile, celle où il faut développer des idées musicales de manière pseudo-réaliste et non simplement jouer des notes de la gamme au hasard. Bien sur, il y aura une partie de hasard dans le choix des notes ou des phrases, mais l'idée est d'implémenter des structures qui permettent de générer une mélodie "écoutable". Pour ce faire, différentes avenues seront explorées, en se basant sur les lectures préliminaires. 
 
 Pour ce qui est de la basse, la technique devrait d'être plus simple. On peut simplement implémenter quelques recettes et les varier au fil des mesures. Par exemple, on peut jouer la fondamentale sur le temps 1, jouer une note de l'accord sur le temps 2 et jouer une note différente sur le temps 3. Pour le quatrième temps, on approche l'accord suivant, par exemple avec du chromatisme. 
 
 Si le temps le permet, des synthétiseurs additionels seront développés pour varier l'instrumentalisation du programme, autant pour les accords que pour la mélodie ou la basse. Pour aider au développement d'éventuels synthétiseurs, la lecture de la série "Synth Secrets" de la revue Sound on Sound pourra aider. Ce développement se fera en parallèle des étapes mentionnées dans l'échéancier, il ne consiste pas en une étape en tant que tel. 
 
-Note : L'application a déjà été commencée dans le cadre du cours MUS3327 à l'Hiver 2017. La partie sur les progressions d'accord a été développée dans ce cours. Au moment de débuter le projet, l'application génère également une ligne de basse plutôt primitive. Aucun calcul n'est fait sur celle-ci, elle ne fait que suivre les accords.
+Note : L'application a déjà été commencée dans le cadre du cours MUS3327 à l'Hiver 2017. La partie sur les progressions d'accord a été développée dans ce cours. Au moment de débuter le projet, l'application génère également une ligne de basse plutôt primitive. Aucun calcul n'est fait sur celle-ci, elle ne fait que suivre les accords. Tout le code est disponible à l'adresse suivante : 
+
+\href{https://github.com/poifra/Creamuspython2}{https://github.com/poifra/Creamuspython2}. Il s'agit du dépôt utilisé pour le cours MUS3327 avec les fonctionalités supplémentaires développées dans le cadre du projet.
 
 	\subsection{Résumé du développement}
-	
 	\subsubsection{Échéancier}
 	\begin{itemize}
 	\item 7 mai	\\
@@ -154,24 +156,36 @@ J'ai également commencé à réfléchir à la structure que je veux utiliser po
 	J'ai implémenté différents générateurs aléatoires. Ils sont basés sur les générateurs présents dans pyo. La prochaine étape consiste à tester les différentes distributions (uniforme, gaussienne, Poisson, etc.) implémentées pour voir si certaines produisent des résultats plus intéressants. Je ne suis pas certain de la méthode que je veux adopter pour relier les générateurs à des notes MIDI, mais la librairie possède une fonction snap qui a un comportement similaire. Il est possible que je m'en inspire. Actuellement, tous les générateurs donnent un flottant compris dans l'interval [0, 1[. En raison des retards dans l'horaire prévu, il est possible que la programmation de mélodies aléatoires ne soit pas terminée selon l'échéancier initial.
 	\item 10 juillet\\
 	J'éprouve quelques difficultés à contacter Olivier pour lui poser des questions sur l'orientation du projet. Entre autres, l'implémentation que j'ai utilisée pour les générateurs semble extrêmement biaisée. Pour l'instant, je teste les différents générateurs avec une fonction snap qui fait en sorte de relier une distribution de valeurs à une gamme quelquoncque. Toutefois, les résultats ne sont pas très intéressants au niveau musical. Il pourrait être intéressant de développer des générateurs plus complexes, qui font appel à des motifs musicaux générés précédemment. Il y a aussi l'aspect rythmique de la mélodie qui n'a pas encore été travaillé. Il pourrait être possible d'implémenter les motifs rythmiques les plus communs et de tenter de les combiner à la génération aléatoire.
-	\item 24 juillet
+	\item 24 juillet\\
+	Je suis présentement en train de relier les générateurs aléatoires au moteur audio développé plus tôt au cours du projet. L'idée est la même que pour la walking bass, c'est à dire que l'accord courant est utilisé comme base. Un ensemble de notes est généré, basé sur une distribution aléatoire. Il va bientôt être possible (d'ici environ une semaine) de juger de la qualité de l'improvisation ainsi générée. Cependant, je pense qu'il va falloir appliquer d'autres techniques pour avoir un résultat décent. Par exemple, il pourrait être possible de ré-utiliser certains passages générés précédemment et de les varier un peu. On peut aussi biaiser un générateur aléatoire afin qu'il produise plus de notes qui harmonisent l'accord courant, plutôt que simplement des notes d'une gamme.
 	
 	\item 7 août
 	
 	\item 18 août\\
 	Envoi du rapport.
+	
 	\end{itemize}
+
 	\section{Résultats}
-	\subsection{Qualité de l'improvisation}
+	La ligne de basse est correcte. Elle est fixée à un tempo qui est le double de celui des accords. Comme les accords sont des blanches, le tempo est donné par la basse. Ceci a été fait afin de simplifier le processus de synthèse. En donnant la gestion du tempo à la basse, il est ainsi possible d'éviter la synthèse d'une batterie, qui aurait nécéssité du temps sans rien apporter aux résultats mélodiques. Toutefois, il est évidemment possible d'améliorer la basse, mais elle joue son rôle efficacement dans l'implémentation actuelle. Pour plus de détails concernant les améliorations, voir la section sur les perspectives. 
+
+	L'élément qui a été plus complexe à modéliser est la mélodie proprement dite. En effet, créer une mélodie qui respecte une tonalité est plutôt simple en soi. La base de la génération est basée sur différentes distributions aléatoires, qui, pour faciliter leur traitement subséquent, sont $\mathbb{R} \in [0,1]$. Tous les générateurs sont définis dans la classe \textit{MyRandoms}. La distribution la plus simple est uniforme et sert de base pour les autres. Évidemment, cette distribution est pseudo-aléatoire, mais la distinction est négligeable dans ce projet, puisqu'il n'y a pas de contraintes de sécurité.
+	
+	\subsubsection{Générateurs particuliers}
+	Deux générateurs ne se qualifient pas tout à fait d'aléatoires. Il s'agit des modes \textit{walker} et \textit{loopseg}.
+	\subsection{Qualité de l'improvisation mélodique}
+	L'appréciation de l'improvisation est évidemment subjective, en autant que la mélodie soit dans la même tonalité que la progression d'accord. 
 	\subsection{Problèmes rencontrés}
+	
 	\section{Perspectives}
 		\subsection{Mélodie}
-		La suite logique du projet est de développer l'aspect qui a été mis de coté. La complexité de cet élément -- il s'agit après tout d'établir une mélodie intéressante basée sur une progression arbitraire d'accords -- fait en sorte que ce projet pourrait faire l'objet à part entière d'un autre projet, basé sur celui existant. Pour avoir une mélodie qui semble correcte, une stratégie possible est d'utiliser l'ensemble des notes de la progression et de déterminer quelle gamme est la plus appropriée à l'ensemble. Autrement dit, on cherche à maximiser les notes communes des accords fournis et d'une gamme. Ensuite, pour générer une mélodie intéressante, on peut développer quelques thèmes au préalables et les développer. Ce ne sont là que des idées préliminaires et dans le cas d'un projet plus poussé, d'autres options seront sans doute évaluées.
+
 		\subsection{Basse}
-		La ligne de basse est plutôt primitive et utilise une simple arpégiation de l'accord courant. De plus, si l'accord est plutôt complexe (cinq voix et plus), on perd les notes les plus hautes de l'accord car elles sont jouées séquentiellement. C'est à dire que le premier temps est toujours la fondamentale, le deuxième la tierce, le troisième la quinte et le quatrième la septième de l'accord. Il pourrait être plus intéressant d'essayer de construire une ligne de \textit{walking bass} plus typique, par exemple en utilisant des tons d'approche pour anticiper le changement ou en changent l'ordre des notes qui sont jouées.
-		
+	
 		\subsection{Style musical}
-		Une autre amélioration est de développer différents styles musicaux. Dans la version actuelle du programme, les accords sont des blanches. Il y en a donc deux par mesure. La basse est d'une note par temps. Ce manque de flexibilité pourrait être corrigé en permettant aux usagers de placer eux-mêmes les accords dans une mesure. Ainsi, ils pourraient explorer les accords sur des contre-temps, par exemple, ou encore avec des durées différentes.
+
 		\subsection{Éléments graphiques}
-		L'interface graphique en tant que tel est assez intuitive à utiliser, mais la construction elle même de progression d'accords pourrait être révisée. Le plus simple serait de demander à l'usager à quelle position il veut placer l'accord qu'il a choisit. Cela pourrait alourdir l'interface, mais il s'agit d'une solution simple à implémenter. Une solution plus complexe est d'implémenter un système de \textit{drag and drop}, tel que mentionné dans le plan initial. De cette façon, l'utilisateur pourrait déplacer à sa guise les accords qu'il a placé et cela garderait l'esprit intuitif de l'interface.
+		L'interface graphique en tant que tel est assez intuitive à utiliser, mais la construction elle même de progression d'accords pourrait être révisée. Dans la version actuelle, les accords sont représentés par une pile. Pour remplacer le premier accord de la progression, il faut donc dépiler tous les accords avant de pouvoir modifier le premier.
+		
+		 La solution la plus simple serait de demander à l'usager à quelle position il veut placer l'accord qu'il a choisit. Par contre, il pourrait être difficile d'implémenter cette fonction sans alourdir considérablement l'interface. Une solution plus complexe est d'implémenter un système de \textit{drag and drop}, tel que mentionné dans le plan initial. De cette façon, l'utilisateur pourrait déplacer à sa guise les accords qu'il a placé et cela garderait l'esprit intuitif de l'interface.
 \end{document}
