@@ -2,12 +2,20 @@
 import wx
 from Chordbook import chords, shiftFactors, transpose
 from AudioManager import AudioPlayer
+from OptionWindow import options
 
-class CustomFrame(wx.Frame):
+class MainWindow(wx.Frame):
 	def __init__(self, parent, id, title):
 		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 400))
 			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
 
+		#menu management
+		self.menubar = wx.MenuBar()
+		self.optionMenu = wx.Menu()
+		self.optionItem = self.optionMenu.Append(-1, 'Options', 'Option menu')
+		self.optionItem.Bind(wx.EVT_MENU, self.displayOptions)
+
+		#actual window
 		self.DEFAULT_TEMPO = 60
 		notes = sorted(['C','C#','D','D#','Db','E','Eb','F','F#','G','G#','Gb','A','A#','Ab','B','Bb'])
 		notes = ['None'] + notes
@@ -108,6 +116,10 @@ class CustomFrame(wx.Frame):
 		self.chordKeys.SetSelection(-1)
 		self.inversionSizer.Layout()
 
+	def displayOptions(self):
+		window = options.OptionWindow()
+		window.show()
+
 	def onAddChord(self, event):
 		#stack based logic, will change in the future
 		inv = ''
@@ -185,7 +197,7 @@ class CustomFrame(wx.Frame):
 
 class ChordManager(wx.App):
 	def OnInit(self):
-		frame = CustomFrame(None, -1, 'Chord Helper')
+		frame = MainWindow(None, -1, 'Chord Helper')
 		frame.Show(True)
 		return True
 

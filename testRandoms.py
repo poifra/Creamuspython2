@@ -19,7 +19,7 @@ def testFCTS():
 
 	for k,v in results.items():
 		print k, mean(v), median(v), mode(v)
-		print v
+		print sorted(v)
 
 
 if __name__=='__main__':
