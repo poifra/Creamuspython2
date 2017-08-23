@@ -2,18 +2,21 @@
 import wx
 from Chordbook import chords, shiftFactors, transpose
 from AudioManager import AudioPlayer
-from OptionWindow import options
+from OptionWindow import OptionWindow as Options
 
 class MainWindow(wx.Frame):
 	def __init__(self, parent, id, title):
-		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 400))
-			#style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER)
+		wx.Frame.__init__(self, parent, id, title, (-1, -1), wx.Size(450, 425))
 
 		#menu management
 		self.menubar = wx.MenuBar()
 		self.optionMenu = wx.Menu()
-		self.optionItem = self.optionMenu.Append(-1, 'Options', 'Option menu')
-		self.optionItem.Bind(wx.EVT_MENU, self.displayOptions)
+		self.optionItem = self.optionMenu.Append(-1, 'Preferences', 'Option menu')
+		self.menubar.Append(self.optionMenu, '&Edit')
+		self.Bind(wx.EVT_MENU, self.displayOptions, self.optionItem)
+	#	self.optionItem.Bind(wx.EVT_MENU, self.displayOptions)
+		self.SetMenuBar(self.menubar)
+		
 
 		#actual window
 		self.DEFAULT_TEMPO = 60
@@ -116,9 +119,9 @@ class MainWindow(wx.Frame):
 		self.chordKeys.SetSelection(-1)
 		self.inversionSizer.Layout()
 
-	def displayOptions(self):
-		window = options.OptionWindow()
-		window.show()
+	def displayOptions(self, evt):
+		window = Options()
+		window.Show()
 
 	def onAddChord(self, event):
 		#stack based logic, will change in the future

@@ -89,7 +89,9 @@ class Melody(AudioEngine):
         AudioEngine.setChordProgression(self, chordProgression, key)
         
     def buildMelody(self, randomFunction, maxSize=0, **kwargs):
-        random = [self.rngInstance.call(randomFunction, **kwargs) for _ in range(100)] 
+        self.rf = randomFunction
+        self.arguments = kwargs
+        random = [self.rngInstance.call(randomFunction, **kwargs) for _ in range(16)] 
         scale = transpose(target=self.mode ,key=self.key, octave=6)
         scaleSize = len(scale)
         randomRange = max(random) + abs(min(random))
@@ -104,11 +106,12 @@ class Melody(AudioEngine):
                 i += 1
             matchingNote = scale[i-1]
             self.snappedScale.append(matchingNote)
-        print self.snappedScale
 
     def getNextNote(self):
         currentNote = self.snappedScale[self.counter % len(self.snappedScale)]
         self.counter += 1
+        if self.counter == len(self.snappedScale):
+            self.buildMelody(self.rf, 0, **self.arguments)
         return currentNote
 
     def getMelody(self):

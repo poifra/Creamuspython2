@@ -5,9 +5,10 @@ from math import log, e, tan
 
 
 '''
-Various random generators, implemented from sources present in github.com/belangeo/pyo
+Various random generators, inspired from sources present in github.com/belangeo/pyo
 '''
 class MyRandoms:
+
 	def __init__(self):
 		self.RAND_MAX = 4294967295
 		self.PYO_RAND_SEED = randint(1, self.RAND_MAX)

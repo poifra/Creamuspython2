@@ -16,7 +16,7 @@ class AudioPlayer():
 		self.bassWalk.buildWalkingBass()
 
 		self.melody = Melody(chords, key)
-		self.melody.buildMelody('loopseg', x1=1, x2=0.3)
+		self.melody.buildMelody('gaussian',x1=0.5,x2=1.0)
 
 		self.tempo = tempo
 		self.dur = 60/(tempo / durations['quarter'] / 4)
